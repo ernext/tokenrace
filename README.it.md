@@ -13,9 +13,9 @@ Confronta la velocità dei server LLM locali (Ollama, LM Studio, Rapid-MLX, oMLX
 Una piccola app [Streamlit](https://streamlit.io): scegli server e modello, avvii il test e vedi in tempo reale TTFT, token al secondo, tempo totale e RAM, con riepilogo, grafico ed export CSV.
 
 <p align="center">
-  <img src="docs/screenshot-it.png" alt="TokenRace: lo stesso modello LFM3 1.7B su Rapid-MLX e Ollama, con risposta in streaming, misure e riepilogo" width="900">
+  <img src="docs/screenshot-it.png" alt="TokenRace: LFM3 1.7B a 8 bit su Rapid-MLX, oMLX e Ollama, con risposta in streaming, misure e riepilogo" width="900">
 </p>
-<p align="center"><sub>LFM3 1.7B su Rapid-MLX Desktop (8 bit) e Ollama (4 bit, nvfp4), prompt "Breve", senza ragionamento, 3 ripetizioni. Quantizzazioni diverse: è un esempio, non una classifica.</sub></p>
+<p align="center"><sub>LFM3 1.7B a 8 bit su Rapid-MLX e oMLX (stessi pesi MLX) e su Ollama (mxfp8), prompt "Breve", senza ragionamento, 3 ripetizioni su un Mac. Un singolo esempio, non una classifica.</sub></p>
 
 ## Caratteristiche
 
@@ -102,6 +102,7 @@ In Breve e Lungo ogni ripetizione inizia con un ID univoco, così la cache del p
 L'interruttore **Senza ragionamento** invia un parametro diverso a seconda del server (✅ = provato):
 - Ollama: `reasoning_effort: "none"` ✅
 - LM Studio: `reasoning_effort: "none"` più `chat_template_kwargs` ✅
+- oMLX: `chat_template_kwargs: {"enable_thinking": false}` ✅
 - text-generation-webui: `enable_thinking: false`
 - tutti gli altri (llama.cpp, MLX, vLLM, SGLang…): `chat_template_kwargs: {"enable_thinking": false}`
 

@@ -13,9 +13,9 @@ Benchmark local LLM servers (Ollama, LM Studio, Rapid-MLX, oMLX, llama.cpp, vLLM
 A small [Streamlit](https://streamlit.io) app: pick a server and a model, start the test and watch TTFT, tokens per second, total time and RAM live, with a summary, a chart and CSV export.
 
 <p align="center">
-  <img src="docs/screenshot.png" alt="TokenRace: the same LFM3 1.7B model on Rapid-MLX and Ollama, with streaming response, live metrics and summary" width="900">
+  <img src="docs/screenshot.png" alt="TokenRace: LFM3 1.7B at 8-bit on Rapid-MLX, oMLX and Ollama, with streaming response, live metrics and summary" width="900">
 </p>
-<p align="center"><sub>LFM3 1.7B on Rapid-MLX Desktop (8-bit) and Ollama (4-bit, nvfp4), "Short" prompt, no reasoning, 3 runs. Different quantizations: an example, not a ranking.</sub></p>
+<p align="center"><sub>LFM3 1.7B at 8-bit on Rapid-MLX and oMLX (same MLX weights) and on Ollama (mxfp8), "Short" prompt, no reasoning, 3 runs on one Mac. A single example, not a ranking.</sub></p>
 
 ## Features
 
@@ -102,6 +102,7 @@ In Short and Long every run starts with a unique ID, so prompt caching does not 
 The **No reasoning** switch sends a different parameter depending on the server (✅ = tested):
 - Ollama: `reasoning_effort: "none"` ✅
 - LM Studio: `reasoning_effort: "none"` plus `chat_template_kwargs` ✅
+- oMLX: `chat_template_kwargs: {"enable_thinking": false}` ✅
 - text-generation-webui: `enable_thinking: false`
 - all others (llama.cpp, MLX, vLLM, SGLang…): `chat_template_kwargs: {"enable_thinking": false}`
 

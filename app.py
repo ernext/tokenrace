@@ -45,6 +45,12 @@ def reasoning_md(t, text: str) -> str:
     return f"> 💭 *{t('label.reasoning')}:* " + text[-3000:].replace("\n", " ") + "\n\n"
 
 
+def status_badge(text: str, state: str) -> str:
+    """Etichetta dello stato della ripetizione (state: running, done)."""
+    return (f'<div class="tr-status-wrap"><span class="tr-status tr-status-{state}">'
+            f'<span class="tr-dot"></span>{text}</span></div>')
+
+
 def error_text(t, e: bench.ServerError) -> str:
     return t(f"err.{e.code}", **e.params)
 
@@ -195,7 +201,7 @@ def render_prompt_form(t, server, presets, defaults, model):
     return prompt, params, start
 
 
-def run_test(t, ctx, prompt, run_id_label, measure, resp_box, live_box, reps_box):
+def run_test(t, ctx, prompt, run_id_label, measure, resp_box, status_box, live_box, reps_box):
     """Esegue le ripetizioni aggiornando risposta e misure in tempo reale."""
     ss = st.session_state
     p = ctx["params"]
@@ -206,6 +212,8 @@ def run_test(t, ctx, prompt, run_id_label, measure, resp_box, live_box, reps_box
             text = f"[{run_id_label}: {uuid.uuid4()}]\n{prompt}"
         last_ui = [0.0]
         status = t("msg.run_status", i=rip, n=p["repetitions"]) + (t("msg.cold") if rip == 1 else "")
+        status_box.markdown(status_badge(f"{status} · {t('msg.in_progress')}", "running"),
+                            unsafe_allow_html=True)
 
         def on_update(r_txt, c_txt, live, status=status):
             now = time.perf_counter()
@@ -214,7 +222,6 @@ def run_test(t, ctx, prompt, run_id_label, measure, resp_box, live_box, reps_box
             last_ui[0] = now
             resp_box.markdown(reasoning_md(t, r_txt) + c_txt)
             with live_box.container():
-                st.caption(f"🔴 {status} · {t('msg.in_progress')}")
                 a, b = st.columns(2)
                 a.metric(t("metric.ttft"), f"{live['ttft']:.2f}", help=t("help.ttft"), border=True)
                 b.metric(t("metric.chunks"), live["chunks"], help=t("help.chunks"), border=True)
@@ -229,16 +236,18 @@ def run_test(t, ctx, prompt, run_id_label, measure, resp_box, live_box, reps_box
                                ram_interval=measure["ram_interval_s"],
                                timeout=(measure["connect_timeout_s"], measure["read_timeout_s"]))
         except bench.ServerError as e:
+            status_box.empty()
             st.error(error_text(t, e))
             break
 
         resp_box.markdown(reasoning_md(t, m["reasoning"]) + m["content"])
+        status_box.markdown(status_badge(f"{status} · {t('msg.completed')}", "done"),
+                            unsafe_allow_html=True)
         row = make_row(ctx, rip, m)
         ss.history.append(row)
         rows.append(row)
 
         with live_box.container():
-            st.caption(f"✅ {status} · {t('msg.completed')}")
             a, b, c = st.columns(3)
             a.metric(t("metric.ttft"), fmt(m["ttft"]), help=t("help.ttft"), border=True)
             b.metric(t("metric.gen"), fmt(m["tok_s_gen"], 1), help=t("help.gen"), border=True)
@@ -370,14 +379,17 @@ def main():
         st.markdown(f"##### {t('section.response')}")
         resp_box = st.container(height=ui["response_height"], border=False).empty()
     with right.container(border=True):
-        st.markdown(f"##### {t('section.live')}")
+        h1, h2 = st.columns([3, 2], vertical_alignment="center")
+        h1.markdown(f"##### {t('section.live')}")
+        status_box = h2.empty()
         live_box = st.empty()
         reps_box = st.empty()
 
     if start and model:
         ctx = {"server": server, "base_url": base_url, "api_key": api_key, "model": model,
                "preset": ss.preset, "lang": lang, "params": params}
-        run_test(t, ctx, prompt, prompt_texts["run_id"], measure, resp_box, live_box, reps_box)
+        run_test(t, ctx, prompt, prompt_texts["run_id"], measure, resp_box, status_box, live_box,
+                 reps_box)
     else:
         resp_box.caption(t("msg.response_placeholder"))
         live_box.caption(t("msg.live_placeholder"))

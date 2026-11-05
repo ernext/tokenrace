@@ -23,3 +23,14 @@ h5 {margin: 0 0 0.6rem 0 !important; padding: 0 !important;}
 
 /* Piè di pagina */
 .tr-footer {text-align: center; opacity: 0.55; font-size: 0.8rem; margin-top: 1.5rem;}
+
+/* Stato della ripetizione, in alto a destra del riquadro delle misure */
+.tr-status-wrap {text-align: right; margin-bottom: 1rem;}
+.tr-status {display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.15rem 0.7rem;
+            border-radius: 999px; font-size: 0.75rem; font-weight: 600; white-space: nowrap;}
+.tr-dot {width: 0.5rem; height: 0.5rem; border-radius: 50%; background: currentColor;}
+.tr-status-running {color: var(--tr-primary);
+                    background: color-mix(in srgb, var(--tr-primary) 12%, transparent);}
+.tr-status-running .tr-dot {animation: tr-pulse 1s ease-in-out infinite;}
+.tr-status-done {color: #1a9f53; background: color-mix(in srgb, #1a9f53 12%, transparent);}
+@keyframes tr-pulse {0%, 100% {opacity: 1;} 50% {opacity: 0.25;}}
