@@ -10,8 +10,9 @@ Confronta la velocità dei server LLM locali (Ollama, LM Studio, Rapid-MLX, oMLX
 Un'app [Streamlit](https://streamlit.io) in un solo file: scegli server e modello, avvii il test e vedi in tempo reale TTFT, token al secondo, tempo totale e RAM, con riepilogo, grafico ed export CSV.
 
 <p align="center">
-  <img src="docs/screenshot.png" alt="TokenRace: test di qwen3.5 e gemma4 su Ollama, con risposta in streaming, misure e riepilogo" width="900">
+  <img src="docs/screenshot.png" alt="TokenRace: lo stesso modello LFM3 1.7B su Ollama e Rapid-MLX, con risposta in streaming, misure e riepilogo" width="900">
 </p>
+<p align="center"><sub>LFM3 1.7B su Ollama (4 bit, nvfp4) e su Rapid-MLX Desktop (8 bit), prompt "Breve", senza ragionamento, 3 ripetizioni. Quantizzazioni diverse: è un esempio, non una classifica.</sub></p>
 
 > *English:* TokenRace is a single-file Streamlit app that benchmarks local OpenAI-compatible LLM servers (Ollama, LM Studio, MLX servers, llama.cpp, vLLM…) with identical client-side timing. The UI is in Italian.
 
@@ -22,7 +23,7 @@ Un'app [Streamlit](https://streamlit.io) in un solo file: scegli server e modell
 - Risposta in streaming e misure in tempo reale.
 - Modelli con ragionamento cronometrati correttamente, con token di ragionamento e di risposta separati, e opzione **Senza ragionamento**.
 - Prima ripetizione segnata "a freddo" ed esclusa dalla mediana.
-- Riepilogo con mediana, minimo e massimo, grafico per server ed export CSV.
+- Riepilogo con mediana, minimo e massimo, grafico per server e modello ed export CSV.
 - Tutto locale: niente database, account o telemetria.
 
 ## Requisiti
@@ -60,7 +61,7 @@ Se il tuo server non è in elenco ma è compatibile OpenAI, sceglierne uno quals
 |---|---|---|---|
 | Ollama | `ollama serve` | http://localhost:11434/v1 | Mac, Linux, Windows |
 | LM Studio | `lms server start`, poi `lms load <modello>` | http://localhost:1234/v1 | Mac, Linux, Windows |
-| Rapid-MLX | `rapid-mlx serve <modello> --port 8000` | http://localhost:8000/v1 | Mac |
+| Rapid-MLX | app Rapid-MLX Desktop (oppure `rapid-mlx serve <modello> --port 8000`) | http://localhost:7659/v1 (Desktop, con API key) · 8000 (CLI) | Mac |
 | oMLX | dall'app oMLX o dalla sua CLI | http://localhost:8000/v1 | Mac |
 | mlx_lm.server | `mlx_lm.server --model <modello> --port 8080` | http://localhost:8080/v1 | Mac |
 | llama.cpp | `llama-server -m <file.gguf> --port 8080` | http://localhost:8080/v1 | Mac, Linux, Windows |

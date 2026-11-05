@@ -14,6 +14,7 @@ import time
 import uuid
 from datetime import datetime
 
+import altair as alt  # incluso con Streamlit
 import pandas as pd
 import psutil
 import requests
@@ -29,8 +30,8 @@ SERVERS = {
     "Ollama": ("http://localhost:11434/v1", "ollama serve", "Mac, Linux, Windows."),
     "LM Studio": ("http://localhost:1234/v1", "lms server start  (poi lms load <modello>)",
                   "Mac, Linux, Windows."),
-    "Rapid-MLX": ("http://localhost:8000/v1", "rapid-mlx serve <modello> --port 8000",
-                  "Solo Mac. Porta 8000 presa dagli esempi della documentazione."),
+    "Rapid-MLX": ("http://localhost:7659/v1", "avvia l'app Rapid-MLX Desktop  (da CLI: rapid-mlx serve <modello> --port 8000)",
+                  "Solo Mac. L'app Desktop usa la porta 7659 e richiede la API key; la CLI usa la 8000."),
     "oMLX": ("http://localhost:8000/v1", "avvia oMLX dall'app o dalla sua CLI",
              "Solo Mac. Porta 8000 da fonti esterne: verificala nelle impostazioni di oMLX."),
     "mlx_lm.server": ("http://localhost:8080/v1", "mlx_lm.server --model <modello> --port 8080",
@@ -377,7 +378,8 @@ COL_HELP = {
 
 def col_config(columns) -> dict:
     """Associa a ogni colonna la sua spiegazione (anche per «· mediana/min/max»)."""
-    cfg = {}
+    cfg = {c: st.column_config.TextColumn(width="medium")
+           for c in ("Server", "Modello") if c in columns}
     for c in columns:
         base = c.split(" · ")[0]
         if base in COL_HELP:
@@ -532,7 +534,7 @@ def main():
                    + f"{stima_token(prompt):,}".replace(",", ".") + " (caratteri / 4)")
         nr_payload, nr_provato = no_reasoning_for(server)
         nr_testo = json.dumps(nr_payload)
-        nr_on = n2.toggle("Senza ragionamento", help=H["no_reasoning"] + f"\n\nPer {server} invia: `{nr_testo}`"
+        nr_on = n2.toggle("Senza ragionamento", key="no_reasoning", help=H["no_reasoning"] + f"\n\nPer {server} invia: `{nr_testo}`"
                           + (" (provato)." if nr_provato else " (non ancora provato su questo server)."))
         params["no_reasoning"] = nr_payload if nr_on else None
         if nr_on:
@@ -635,14 +637,26 @@ def main():
                 st.dataframe(riepilogo.round(2), hide_index=True, width="stretch",
                              column_config=col_config(riepilogo.columns))
             with g2:
-                st.markdown("**Velocità effettiva mediana per server** (tok/s)")
+                st.markdown("**Velocità effettiva mediana per server e modello** (tok/s)")
                 if caldi.empty:
                     st.caption("Servono almeno 2 ripetizioni per calcolare la mediana.")
                 else:
-                    serie = (caldi.groupby("Server")["Velocità effettiva (tok/s)"].median()
-                             .sort_values(ascending=False))
-                    st.bar_chart(serie, horizontal=True, color="#FF5A1F", height=240,
-                                 x_label="", y_label="tok/s")
+                    # Una barra per server e modello; il tipo di prompt si aggiunge
+                    # all'etichetta solo se nello storico ce n'è più di uno.
+                    gruppi = chiavi if caldi["Tipo prompt"].nunique() > 1 else chiavi[:2]
+                    barre = (caldi.groupby(gruppi)["Velocità effettiva (tok/s)"].median()
+                             .rename("tok/s").reset_index())
+                    barre["Server e modello"] = barre[gruppi].astype(str).agg(" · ".join, axis=1)
+                    base = alt.Chart(barre).encode(
+                        x=alt.X("tok/s:Q", title="tok/s"),
+                        y=alt.Y("Server e modello:N", sort="-x", title=None,
+                                axis=alt.Axis(labelLimit=0)),
+                        tooltip=["Server e modello", alt.Tooltip("tok/s:Q", format=".1f")])
+                    barre_chart = base.mark_bar(color="#FF5A1F", cornerRadiusEnd=4)
+                    valori = base.mark_text(align="left", dx=4, fontWeight="bold").encode(
+                        text=alt.Text("tok/s:Q", format=".1f"))
+                    st.altair_chart((barre_chart + valori).properties(height=50 + 45 * len(barre)),
+                                    width="stretch")
 
             with st.expander("Tutte le ripetizioni"):
                 st.dataframe(df.round(3), hide_index=True, width="stretch",
