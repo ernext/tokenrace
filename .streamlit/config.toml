@@ -1,3 +1,11 @@
 # Nessuna statistica d'uso inviata a Streamlit: l'app resta tutta locale.
 [browser]
 gatherUsageStats = false
+
+[client]
+# Nasconde il pulsante "Deploy" e lascia solo il menu essenziale.
+toolbarMode = "minimal"
+
+[theme]
+primaryColor = "#FF5A1F"
+baseRadius = "0.6rem"

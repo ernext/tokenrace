@@ -1,8 +1,17 @@
 # 🏁 TokenRace — Local LLM Speed Test
 
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org)
+[![Streamlit](https://img.shields.io/badge/Streamlit-app-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io)
+[![Licenza MIT](https://img.shields.io/badge/licenza-MIT-green)](LICENSE)
+[![Server supportati](https://img.shields.io/badge/server-15-FF5A1F)](#server-supportati)
+
 Confronta la velocità dei server LLM locali (Ollama, LM Studio, Rapid-MLX, oMLX, llama.cpp, vLLM e altri) con **lo stesso identico codice di misura** per tutti.
 
 Un'app [Streamlit](https://streamlit.io) in un solo file: scegli server e modello, avvii il test e vedi in tempo reale TTFT, token al secondo, tempo totale e RAM, con riepilogo, grafico ed export CSV.
+
+<p align="center">
+  <img src="docs/screenshot.png" alt="TokenRace: test di qwen3.5 e gemma4 su Ollama, con risposta in streaming, misure e riepilogo" width="900">
+</p>
 
 > *English:* TokenRace is a single-file Streamlit app that benchmarks local OpenAI-compatible LLM servers (Ollama, LM Studio, MLX servers, llama.cpp, vLLM…) with identical client-side timing. The UI is in Italian.
 

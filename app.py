@@ -426,22 +426,53 @@ def on_preset_change():
 
 COMPACT_CSS = """
 <style>
-.block-container {padding-top: 2.5rem; padding-bottom: 1rem;}
-h1 {font-size: 1.8rem !important; padding-bottom: 0.2rem !important;}
-h5 {margin: 0.8rem 0 0.3rem 0 !important; padding: 0 !important;}
+.block-container {padding-top: 2rem; padding-bottom: 1rem; max-width: 1400px;}
+h5 {margin: 0 0 0.6rem 0 !important; padding: 0 !important;}
 [data-testid="stVerticalBlock"] {gap: 0.5rem;}
 [data-testid="stWidgetLabel"] p {font-size: 0.8rem;}
 .stTextInput input, .stNumberInput input, .stTextArea textarea,
 [data-baseweb="select"] div {font-size: 0.85rem;}
-[data-testid="stCaptionContainer"] {margin-top: -0.4rem;}
+[data-testid="stCaptionContainer"] {margin-top: -0.3rem;}
+[data-testid="stMetricValue"] {font-size: 1.5rem;}
+[data-testid="stMetricLabel"] p {font-size: 0.75rem;}
+.tr-hero {display: flex; align-items: baseline; gap: 0.8rem; flex-wrap: wrap;
+          margin-bottom: 0.6rem;}
+.tr-hero h1 {font-size: 2rem; margin: 0; padding: 0;}
+.tr-hero h1 span {color: #FF5A1F;}
+.tr-hero p {margin: 0; opacity: 0.65; font-size: 0.95rem;}
+.tr-pill {display: inline-block; padding: 0.1rem 0.6rem; border-radius: 999px;
+          background: rgba(255, 90, 31, 0.12); color: #FF5A1F; font-size: 0.75rem;
+          font-weight: 600;}
+.tr-footer {text-align: center; opacity: 0.55; font-size: 0.8rem; margin-top: 1.5rem;}
 </style>
 """
 
+HERO = """
+<div class="tr-hero">
+  <h1>🏁 Token<span>Race</span></h1>
+  <p>Benchmark dei server LLM locali · stesso codice di misura per tutti</p>
+  <span class="tr-pill">{n} server</span>
+</div>
+"""
+
+FOOTER = """
+<div class="tr-footer">
+  TokenRace · open source, licenza MIT ·
+  <a href="https://github.com/ernext/tokenrace" target="_blank">github.com/ernext/tokenrace</a>
+</div>
+"""
+
+
+def reasoning_md(testo: str) -> str:
+    if not testo:
+        return ""
+    return "> 💭 *Ragionamento:* " + testo[-3000:].replace("\n", " ") + "\n\n"
+
 
 def main():
-    st.set_page_config(page_title="TokenRace", layout="wide")
+    st.set_page_config(page_title="TokenRace", page_icon="🏁", layout="wide")
     st.markdown(COMPACT_CSS, unsafe_allow_html=True)
-    st.title("🏁 TokenRace — Local LLM Speed Test")
+    st.markdown(HERO.format(n=len(SERVERS)), unsafe_allow_html=True)
 
     ss = st.session_state
     ss.setdefault("history", [])
@@ -449,73 +480,79 @@ def main():
     ss.setdefault("preset", "Breve")
     ss.setdefault("prompt", PROMPT_BREVE)
 
-    # --- 1. Server e modello (una riga) ---------------------------------------
-    st.markdown("##### 1. Server e modello")
-    c1, c2, c5, c3, c4 = st.columns([1.4, 1.9, 0.9, 2, 1.6], vertical_alignment="bottom")
-    server = c1.selectbox("Server", list(SERVERS), help=H["server"])
-    url_default, comando, nota = SERVERS[server]
-    base_url = c2.text_input("URL base", value=url_default, key=f"url_{server}", help=H["url"])
-    api_key = c5.text_input("API key", type="password", key=f"key_{server}", help=H["api_key"])
-    errore = None
-    if c4.button("🔄 Aggiorna modelli", help=H["aggiorna"], width="stretch"):
-        try:
-            ss.models[base_url] = fetch_models(base_url, api_key)
-            if not ss.models[base_url]:
-                errore = ("warning", "Il server è attivo ma non ha modelli disponibili.")
-        except ServerError as e:
-            ss.models.pop(base_url, None)
-            errore = ("error", str(e))
-    modelli = ss.models.get(base_url, [])
-    model = c3.selectbox("Modello", modelli, placeholder="Premi «Aggiorna modelli»",
-                         index=0 if modelli else None, help=H["modello"])
-    st.caption(f"**Avvio:** `{comando}` · {nota}")
-    if errore:
-        getattr(st, errore[0])(errore[1])
+    # --- 1. Server e modello --------------------------------------------------
+    with st.container(border=True):
+        st.markdown("##### 🖥️ Server e modello")
+        c1, c2, c5, c3, c4 = st.columns([1.4, 1.9, 0.9, 2, 1.6], vertical_alignment="bottom")
+        server = c1.selectbox("Server", list(SERVERS), help=H["server"])
+        url_default, comando, nota = SERVERS[server]
+        base_url = c2.text_input("URL base", value=url_default, key=f"url_{server}", help=H["url"])
+        api_key = c5.text_input("API key", type="password", key=f"key_{server}", help=H["api_key"])
+        errore = None
+        if c4.button("🔄 Aggiorna modelli", help=H["aggiorna"], width="stretch"):
+            try:
+                ss.models[base_url] = fetch_models(base_url, api_key)
+                if not ss.models[base_url]:
+                    errore = ("warning", "Il server è attivo ma non ha modelli disponibili.")
+            except ServerError as e:
+                ss.models.pop(base_url, None)
+                errore = ("error", str(e))
+        modelli = ss.models.get(base_url, [])
+        model = c3.selectbox("Modello", modelli, placeholder="Premi «Aggiorna modelli»",
+                             index=0 if modelli else None, help=H["modello"])
+        st.caption(f"**Avvio:** `{comando}` · {nota}")
+        if errore:
+            getattr(st, errore[0])(errore[1])
 
     # --- 2. Prompt e parametri ------------------------------------------------
-    st.markdown("##### 2. Prompt")
-    r = st.columns([1.3, 1, 1, 1, 1, 1.2, 1], vertical_alignment="bottom")
-    r[0].selectbox("Prompt pronto", list(PRESETS), key="preset", on_change=on_preset_change,
-                   help=H["preset"])
-    params = {
-        "temperature": r[1].number_input("Temperature", 0.0, 2.0, 0.0, 0.1, help=H["temperature"]),
-        "seed": int(r[2].number_input("Seed", value=42, step=1, help=H["seed"])),
-        "max_tokens": int(r[3].number_input("Max tokens", 1, 32768, 512, 64, help=H["max_tokens"])),
-        "ripetizioni": int(r[4].number_input("Ripetizioni", 1, 50, 3, 1, help=H["ripetizioni"])),
-    }
-    avvia = r[5].button("▶️ Avvia test", type="primary", disabled=not model,
-                        help=H["avvia"], width="stretch")
-    ferma = r[6].button("⏹️ Ferma", help=H["ferma"], width="stretch")
+    with st.container(border=True):
+        st.markdown("##### 📝 Prompt e parametri")
+        r = st.columns([1.3, 1, 1, 1, 1, 1.2, 1], vertical_alignment="bottom")
+        r[0].selectbox("Prompt pronto", list(PRESETS), key="preset", on_change=on_preset_change,
+                       help=H["preset"])
+        params = {
+            "temperature": r[1].number_input("Temperature", 0.0, 2.0, 0.0, 0.1, help=H["temperature"]),
+            "seed": int(r[2].number_input("Seed", value=42, step=1, help=H["seed"])),
+            "max_tokens": int(r[3].number_input("Max tokens", 1, 32768, 512, 64, help=H["max_tokens"])),
+            "ripetizioni": int(r[4].number_input("Ripetizioni", 1, 50, 3, 1, help=H["ripetizioni"])),
+        }
+        avvia = r[5].button("▶️ Avvia test", type="primary", disabled=not model,
+                            help=H["avvia"], width="stretch")
+        ferma = r[6].button("⏹️ Ferma", help=H["ferma"], width="stretch")
 
-    tipo = ss.preset
-    descr = {
-        "Breve": "prompt corto, risposta lunga, ID univoco a ogni ripetizione",
-        "Lungo": "≈8.000 token di contesto, risposta breve, ID univoco a ogni ripetizione",
-        "Cache": "stesso prompt lungo, identico a ogni ripetizione (misura la cache)",
-    }
-    prompt = st.text_area("Testo del prompt", key="prompt", height=90, help=H["prompt"])
-    n1, n2 = st.columns([3, 1.2], vertical_alignment="center")
-    n1.caption(f"**{tipo}**: {descr[tipo]} · stima token del prompt ≈ "
-               + f"{stima_token(prompt):,}".replace(",", ".") + " (caratteri / 4)")
-    nr_payload, nr_provato = no_reasoning_for(server)
-    nr_testo = json.dumps(nr_payload)
-    nr_on = n2.toggle("Senza ragionamento", help=H["no_reasoning"] + f"\n\nPer {server} invia: `{nr_testo}`"
-                      + (" (provato)." if nr_provato else " (non ancora provato su questo server)."))
-    params["no_reasoning"] = nr_payload if nr_on else None
-    if nr_on:
-        st.caption(f"Senza ragionamento → invia `{nr_testo}` · "
-                   + ("provato con questo server" if nr_provato else "non ancora provato con questo server"))
-    if ferma:
-        st.warning("Test interrotto. Le ripetizioni completate sono state salvate.")
+        tipo = ss.preset
+        descr = {
+            "Breve": "prompt corto, risposta lunga, ID univoco a ogni ripetizione",
+            "Lungo": "≈8.000 token di contesto, risposta breve, ID univoco a ogni ripetizione",
+            "Cache": "stesso prompt lungo, identico a ogni ripetizione (misura la cache)",
+        }
+        prompt = st.text_area("Testo del prompt", key="prompt", height=90, help=H["prompt"])
+        n1, n2 = st.columns([3, 1.2], vertical_alignment="center")
+        n1.caption(f"**{tipo}**: {descr[tipo]} · stima token del prompt ≈ "
+                   + f"{stima_token(prompt):,}".replace(",", ".") + " (caratteri / 4)")
+        nr_payload, nr_provato = no_reasoning_for(server)
+        nr_testo = json.dumps(nr_payload)
+        nr_on = n2.toggle("Senza ragionamento", help=H["no_reasoning"] + f"\n\nPer {server} invia: `{nr_testo}`"
+                          + (" (provato)." if nr_provato else " (non ancora provato su questo server)."))
+        params["no_reasoning"] = nr_payload if nr_on else None
+        if nr_on:
+            st.caption(f"Senza ragionamento → invia `{nr_testo}` · "
+                       + ("provato con questo server" if nr_provato else "non ancora provato con questo server"))
+        if ferma:
+            st.warning("Test interrotto. Le ripetizioni completate sono state salvate.")
 
     # --- 3. Risposta e misure -------------------------------------------------
-    st.markdown("##### 3. Risposta e misure")
     left, right = st.columns([3, 2])
-    left.markdown("**Risposta (streaming)**")
-    resp_box = left.empty()
-    right.markdown("**Misure in tempo reale**")
-    live_box = right.empty()
-    reps_box = right.empty()
+    with left.container(border=True):
+        st.markdown("##### 💬 Risposta in streaming")
+        resp_box = st.container(height=430, border=False).empty()
+    with right.container(border=True):
+        st.markdown("##### ⏱️ Misure in tempo reale")
+        live_box = st.empty()
+        reps_box = st.empty()
+    if not (avvia and model):
+        resp_box.caption("La risposta del modello comparirà qui durante il test.")
+        live_box.caption("Le misure di ogni ripetizione compariranno qui.")
 
     if avvia and model:
         run_rows = []
@@ -524,25 +561,21 @@ def main():
             if tipo in ("Breve", "Lungo"):
                 testo = f"[ID esecuzione: {uuid.uuid4()}]\n{prompt}"
             last_ui = [0.0]
+            stato = f"Ripetizione {rip}/{params['ripetizioni']}" + (" · a freddo" if rip == 1 else "")
 
-            def on_update(r_txt, c_txt, live, rip=rip):
+            def on_update(r_txt, c_txt, live, stato=stato):
                 now = time.perf_counter()
                 if now - last_ui[0] < 0.1:
                     return
                 last_ui[0] = now
-                md = ""
-                if r_txt:
-                    md += "> 💭 *Ragionamento:* " + r_txt[-3000:].replace("\n", " ") + "\n\n"
-                md += c_txt
-                resp_box.markdown(md)
+                resp_box.markdown(reasoning_md(r_txt) + c_txt)
                 with live_box.container():
-                    st.caption(f"Ripetizione {rip}/{params['ripetizioni']}"
-                               + (" — a freddo" if rip == 1 else ""))
+                    st.caption(f"🔴 {stato} · in corso")
                     a, b = st.columns(2)
-                    a.metric("TTFT (s)", f"{live['ttft']:.2f}", help=H["ttft"])
-                    b.metric("Chunk ricevuti", live["chunk"], help=H["chunk"])
-                    a.metric("Trascorso (s)", f"{live['elapsed']:.1f}", help=H["trascorso"])
-                    b.metric("RAM picco (GB)", f"{live['ram_picco']:.1f}", help=H["ram_picco"])
+                    a.metric("TTFT (s)", f"{live['ttft']:.2f}", help=H["ttft"], border=True)
+                    b.metric("Chunk ricevuti", live["chunk"], help=H["chunk"], border=True)
+                    a.metric("Trascorso (s)", f"{live['elapsed']:.1f}", help=H["trascorso"], border=True)
+                    b.metric("RAM picco (GB)", f"{live['ram_picco']:.1f}", help=H["ram_picco"], border=True)
 
             try:
                 m = run_once(base_url, model, testo, params["temperature"], params["seed"],
@@ -551,27 +584,23 @@ def main():
                 st.error(str(e))
                 break
 
-            md = ""
-            if m["reasoning"]:
-                md += "> 💭 *Ragionamento:* " + m["reasoning"][-3000:].replace("\n", " ") + "\n\n"
-            resp_box.markdown(md + m["content"])
+            resp_box.markdown(reasoning_md(m["reasoning"]) + m["content"])
             row = to_row(server, base_url, model, tipo, rip, params, m)
             ss.history.append(row)
             run_rows.append(row)
 
             with live_box.container():
-                st.caption(f"Ripetizione {rip}/{params['ripetizioni']} completata"
-                           + (" — a freddo" if rip == 1 else ""))
+                st.caption(f"✅ {stato} · completata")
                 a, b, c = st.columns(3)
-                a.metric("TTFT (s)", fmt(m['ttft']), help=H["ttft"])
-                b.metric("Gen. (tok/s)", fmt(m['tok_s_gen'], 1), help=H["gen"])
-                c.metric("Effettiva (tok/s)", fmt(m['tok_s_eff'], 1), help=H["eff"])
-                a.metric("Totale (s)", fmt(m['totale']), help=H["totale"])
-                b.metric("Token in/out", f"{m['tok_in']}/{m['tok_out']}", help=H["token_io"])
-                c.metric("Prompt (tok/s)", fmt(m['prompt_tok_s'], 0), help=H["prompt_s"])
-                a.metric("Ragion./risp.", f"{m['tok_reason']}/{m['tok_answer']}", help=H["split"])
-                b.metric("RAM prima (GB)", f"{m['ram_prima']:.1f}", help=H["ram_prima"])
-                c.metric("RAM picco (GB)", f"{m['ram_picco']:.1f}", help=H["ram_picco"])
+                a.metric("TTFT (s)", fmt(m['ttft']), help=H["ttft"], border=True)
+                b.metric("Gen. (tok/s)", fmt(m['tok_s_gen'], 1), help=H["gen"], border=True)
+                c.metric("Effettiva (tok/s)", fmt(m['tok_s_eff'], 1), help=H["eff"], border=True)
+                a.metric("Totale (s)", fmt(m['totale']), help=H["totale"], border=True)
+                b.metric("Token in/out", f"{m['tok_in']}/{m['tok_out']}", help=H["token_io"], border=True)
+                c.metric("Prompt (tok/s)", fmt(m['prompt_tok_s'], 0), help=H["prompt_s"], border=True)
+                a.metric("Ragion./risp.", f"{m['tok_reason']}/{m['tok_answer']}", help=H["split"], border=True)
+                b.metric("RAM prima (GB)", f"{m['ram_prima']:.1f}", help=H["ram_prima"], border=True)
+                c.metric("RAM picco (GB)", f"{m['ram_picco']:.1f}", help=H["ram_picco"], border=True)
                 st.caption("RAM = memoria in uso dell'intero sistema, non del solo server.")
                 if m["stimato"]:
                     st.warning("⚠️ Conteggio stimato: il server non ha fornito usage, token contati dai chunk.")
@@ -585,42 +614,49 @@ def main():
                                width="stretch", column_config=col_config(cols))
 
     # --- Risultati -------------------------------------------------------------
-    st.markdown("##### Risultati della sessione")
-    if not ss.history:
-        st.info("Nessun risultato ancora. Avvia un test.")
-        return
+    with st.container(border=True):
+        st.markdown("##### 📊 Risultati della sessione")
+        if not ss.history:
+            st.info("Nessun risultato ancora. Scegli server e modello, poi premi «Avvia test».")
+        else:
+            df = pd.DataFrame(ss.history)
+            chiavi = ["Server", "Modello", "Tipo prompt"]
+            caldi = df[~df["A freddo"]]
+            mediane, minimi, massimi = [], [], []
+            for m in METRICHE:
+                mediane.append(caldi.groupby(chiavi)[m].median().rename(f"{m} · mediana"))
+                minimi.append(df.groupby(chiavi)[m].min().rename(f"{m} · min"))
+                massimi.append(df.groupby(chiavi)[m].max().rename(f"{m} · max"))
+            riepilogo = pd.concat(mediane + minimi + massimi, axis=1).reset_index()
 
-    df = pd.DataFrame(ss.history)
-    chiavi = ["Server", "Modello", "Tipo prompt"]
-    caldi = df[~df["A freddo"]]
-    parti = []
-    for m in METRICHE:
-        med = caldi.groupby(chiavi)[m].median().rename(f"{m} · mediana")
-        mn = df.groupby(chiavi)[m].min().rename(f"{m} · min")
-        mx = df.groupby(chiavi)[m].max().rename(f"{m} · max")
-        parti += [med, mn, mx]
-    riepilogo = pd.concat(parti, axis=1).reset_index()
-    st.markdown("**Riepilogo** (mediana senza la ripetizione a freddo; min e max su tutte)")
-    st.dataframe(riepilogo.round(2), hide_index=True, width="stretch",
-                 column_config=col_config(riepilogo.columns))
+            g1, g2 = st.columns([3, 2])
+            with g1:
+                st.markdown("**Riepilogo** · mediana senza la ripetizione a freddo; min e max su tutte")
+                st.dataframe(riepilogo.round(2), hide_index=True, width="stretch",
+                             column_config=col_config(riepilogo.columns))
+            with g2:
+                st.markdown("**Velocità effettiva mediana per server** (tok/s)")
+                if caldi.empty:
+                    st.caption("Servono almeno 2 ripetizioni per calcolare la mediana.")
+                else:
+                    serie = (caldi.groupby("Server")["Velocità effettiva (tok/s)"].median()
+                             .sort_values(ascending=False))
+                    st.bar_chart(serie, horizontal=True, color="#FF5A1F", height=240,
+                                 x_label="", y_label="tok/s")
 
-    st.markdown("**Velocità effettiva mediana per server (tok/s)**")
-    if caldi.empty:
-        st.caption("Servono almeno 2 ripetizioni per calcolare la mediana.")
-    else:
-        st.bar_chart(caldi.groupby("Server")["Velocità effettiva (tok/s)"].median())
+            with st.expander("Tutte le ripetizioni"):
+                st.dataframe(df.round(3), hide_index=True, width="stretch",
+                             column_config=col_config(df.columns))
 
-    with st.expander("Tutte le ripetizioni"):
-        st.dataframe(df.round(3), hide_index=True, width="stretch",
-                     column_config=col_config(df.columns))
+            d1, d2, _ = st.columns([1, 1, 5])
+            nome = f"tokenrace_{datetime.now():%Y%m%d_%H%M%S}.csv"
+            d1.download_button("⬇️ Scarica CSV", df.to_csv(index=False).encode("utf-8"),
+                               file_name=nome, mime="text/csv", help=H["scarica"], width="stretch")
+            if d2.button("🗑️ Svuota risultati", help=H["svuota"], width="stretch"):
+                ss.history = []
+                st.rerun()
 
-    d1, d2, _ = st.columns([1, 1, 6])
-    nome = f"tokenrace_{datetime.now():%Y%m%d_%H%M%S}.csv"
-    d1.download_button("⬇️ Scarica CSV", df.to_csv(index=False).encode("utf-8"),
-                       file_name=nome, mime="text/csv", help=H["scarica"])
-    if d2.button("🗑️ Svuota risultati", help=H["svuota"]):
-        ss.history = []
-        st.rerun()
+    st.markdown(FOOTER, unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
