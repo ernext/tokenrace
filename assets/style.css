@@ -1,0 +1,25 @@
+/* Stile di TokenRace. Il colore principale arriva da config/defaults.toml
+   come variabile --tr-primary. */
+
+.block-container {padding-top: 2rem; padding-bottom: 1rem; max-width: 1400px;}
+h5 {margin: 0 0 0.6rem 0 !important; padding: 0 !important;}
+[data-testid="stVerticalBlock"] {gap: 0.5rem;}
+[data-testid="stWidgetLabel"] p {font-size: 0.8rem;}
+.stTextInput input, .stNumberInput input, .stTextArea textarea,
+[data-baseweb="select"] div {font-size: 0.85rem;}
+[data-testid="stCaptionContainer"] {margin-top: -0.3rem;}
+[data-testid="stMetricValue"] {font-size: 1.5rem;}
+[data-testid="stMetricLabel"] p {font-size: 0.75rem;}
+
+/* Intestazione */
+.tr-hero {display: flex; align-items: baseline; gap: 0.8rem; flex-wrap: wrap;
+          margin-bottom: 0.6rem;}
+.tr-hero h1 {font-size: 2rem; margin: 0; padding: 0;}
+.tr-hero h1 span {color: var(--tr-primary);}
+.tr-hero p {margin: 0; opacity: 0.65; font-size: 0.95rem;}
+.tr-pill {display: inline-block; padding: 0.1rem 0.6rem; border-radius: 999px;
+          background: color-mix(in srgb, var(--tr-primary) 12%, transparent);
+          color: var(--tr-primary); font-size: 0.75rem; font-weight: 600;}
+
+/* Piè di pagina */
+.tr-footer {text-align: center; opacity: 0.55; font-size: 0.8rem; margin-top: 1.5rem;}

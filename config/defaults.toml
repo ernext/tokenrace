@@ -1,0 +1,27 @@
+# Valori predefiniti di TokenRace. Modificali liberamente.
+
+[params]
+# Valori iniziali dei campi del test (si possono cambiare anche dall'interfaccia)
+temperature = 0.0
+seed = 42
+max_tokens = 512
+repetitions = 3
+
+[measure]
+ram_interval_s = 0.5       # ogni quanto campionare la RAM di sistema
+ui_refresh_s = 0.1         # ogni quanto aggiornare risposta e misure durante lo streaming
+connect_timeout_s = 5      # attesa massima per collegarsi al server
+read_timeout_s = 600       # attesa massima per la risposta
+models_timeout_s = 5       # attesa massima per GET /models
+
+[long_prompt]
+target_chars = 32000       # lunghezza del contesto dei prompt "Lungo" e "Cache" (≈ 8.000 token)
+
+[ui]
+languages = ["en", "it"]   # lingue disponibili: un file locales/<codice>.toml per ciascuna
+default_language = "en"    # lingua all'apertura (si cambia dal selettore o con ?lang=it)
+fallback_language = "en"   # usata per i testi che mancano in una traduzione
+response_height = 430      # altezza in pixel del riquadro della risposta
+# Il colore principale va cambiato in due posti: qui (per lo stile) e in .streamlit/config.toml
+primary_color = "#FF5A1F"
+repo_url = "https://github.com/ernext/tokenrace"

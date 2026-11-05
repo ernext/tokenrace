@@ -1,0 +1,39 @@
+# Testi dei prompt di prova, uno per lingua.
+#
+# short          prompt "Breve": corto, chiede una risposta lunga
+# long_*         pezzi del prompt "Lungo" (e "Cache"): il paragrafo viene ripetuto fino
+#                a circa target_chars caratteri (vedi defaults.toml), con il segreto a metà
+# run_id         etichetta dell'identificativo univoco aggiunto in "Breve" e "Lungo"
+#
+# Attenzione: cambiare questi testi cambia i risultati. Confronta solo prove fatte
+# con gli stessi prompt (il CSV registra la lingua del prompt).
+
+[it]
+short = """Scrivi un racconto molto dettagliato, di almeno 800 parole, su una guardiana \
+di un faro su un'isola remota che una notte riceve un messaggio misterioso. \
+Descrivi luoghi, personaggi, dialoghi e un finale sorprendente."""
+long_intro = "Leggi il seguente documento."
+long_section = "Sezione"
+long_paragraph = """La città di Valdorino sorge su una collina circondata da vigneti e boschi di \
+castagni. Nel corso dei secoli i suoi abitanti hanno costruito mulini, ponti \
+di pietra e piccole botteghe artigiane lungo il fiume. Ogni primavera si \
+tiene una fiera in cui i mercanti scambiano tessuti, formaggi stagionati e \
+attrezzi agricoli, mentre i musicisti suonano nelle piazze fino a tarda sera. """
+long_secret = "Nota importante: il codice segreto dell'archivio è AZZURRO-47. "
+long_question = "Domanda: qual è il codice segreto dell'archivio? Rispondi solo con il codice."
+run_id = "ID esecuzione"
+
+[en]
+short = """Write a very detailed story, at least 800 words long, about a lighthouse keeper \
+on a remote island who receives a mysterious message one night. \
+Describe places, characters, dialogue and a surprising ending."""
+long_intro = "Read the following document."
+long_section = "Section"
+long_paragraph = """The town of Valdorino sits on a hill surrounded by vineyards and chestnut \
+woods. Over the centuries its people have built mills, stone bridges and small \
+craft workshops along the river. Every spring a fair is held where merchants \
+trade fabrics, aged cheeses and farm tools, while musicians play in the squares \
+until late in the evening. """
+long_secret = "Important note: the archive's secret code is AZURE-47. "
+long_question = "Question: what is the archive's secret code? Answer with the code only."
+run_id = "Run ID"
