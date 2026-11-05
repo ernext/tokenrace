@@ -1,0 +1,15 @@
+# Ambiente virtuale e cache Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Risultati esportati
+*.csv
+
+# Configurazioni locali di editor e strumenti
+.claude/
+.vscode/
+.idea/
+.DS_Store
+.streamlit/secrets.toml

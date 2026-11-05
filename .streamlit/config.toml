@@ -1,0 +1,3 @@
+# Nessuna statistica d'uso inviata a Streamlit: l'app resta tutta locale.
+[browser]
+gatherUsageStats = false
