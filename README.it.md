@@ -64,7 +64,7 @@ Se il tuo server non è in elenco ma è compatibile OpenAI, scegline uno qualsia
 | <img src="https://github.com/ollama.png?size=40" width="20" alt="">&nbsp;[Ollama](https://ollama.com) | `http://localhost:11434/v1` | `ollama serve` | Mac, Linux, Windows. |
 | <img src="https://github.com/lmstudio-ai.png?size=40" width="20" alt="">&nbsp;[LM Studio](https://lmstudio.ai) | `http://localhost:1234/v1` | `lms server start && lms load <model>` | Mac, Linux, Windows. |
 | <img src="https://raw.githubusercontent.com/raullenchai/Rapid-MLX/e2114cf9e7c16dfa3c668832ea6780c02779ca89/docs/assets/logo.png" width="20" alt="">&nbsp;[Rapid-MLX](https://github.com/raullenchai/Rapid-MLX) | `http://localhost:7659/v1` | `rapid-mlx serve <model> --port 8000` | Solo Mac. L'app Rapid-MLX Desktop usa la porta 7659 e richiede la API key; la CLI usa la 8000. |
-| <img src="https://raw.githubusercontent.com/jundot/omlx/2165e75726ba83d9651dbaced61c97728da77bba/apps/omlx-web/omlx_web/static/favicon.svg" width="20" alt="">&nbsp;[oMLX](https://github.com/jundot/omlx) | `http://localhost:8000/v1` | — | Solo Mac. Avvialo dall'app o dalla sua CLI. Porta 8000 da fonti esterne: verificala nelle impostazioni di oMLX. |
+| <img src="https://raw.githubusercontent.com/jundot/omlx/2165e75726ba83d9651dbaced61c97728da77bba/apps/omlx-web/omlx_web/static/favicon.svg" width="20" alt="">&nbsp;[oMLX](https://github.com/jundot/omlx) | `http://localhost:8000/v1` | — | Solo Mac. Avvialo dall'app oMLX: usa la porta 8000 e richiede la API key impostata nell'app. |
 | <img src="https://github.com/ml-explore.png?size=40" width="20" alt="">&nbsp;[mlx_lm.server](https://github.com/ml-explore/mlx-lm) | `http://localhost:8080/v1` | `mlx_lm.server --model <model> --port 8080` | Solo Mac. Server di riferimento MLX, senza ottimizzazioni extra. |
 | <img src="https://github.com/ggml-org.png?size=40" width="20" alt="">&nbsp;[llama.cpp (llama-server)](https://github.com/ggml-org/llama.cpp) | `http://localhost:8080/v1` | `llama-server -m <file.gguf> --port 8080` | Mac, Linux, Windows. Il motore usato da Ollama e LM Studio. |
 | <img src="https://github.com/vllm-project.png?size=40" width="20" alt="">&nbsp;[vLLM](https://github.com/vllm-project/vllm) | `http://localhost:8000/v1` | `vllm serve <model>` | Linux con GPU NVIDIA/AMD. Il più usato in produzione. |
@@ -79,7 +79,7 @@ Se il tuo server non è in elenco ma è compatibile OpenAI, scegline uno qualsia
 
 Note:
 - Diversi server condividono la porta 8000 o 8080: avviane uno alla volta, oppure cambia porta con `--port` e aggiorna l'URL nell'app.
-- Il campo **API key** è facoltativo: serve per Rapid-MLX Desktop, Jan, Unsloth Studio o vLLM avviato con `--api-key`. Non viene mai salvato né esportato.
+- Il campo **API key** è facoltativo: serve per Rapid-MLX Desktop, oMLX, Jan, Unsloth Studio o vLLM avviato con `--api-key`. Non viene mai salvato né esportato.
 
 ## Misure
 
@@ -132,7 +132,7 @@ assets/style.css     stile grafico
 
 - La RAM è quella dell'intero sistema, non del solo server.
 - La velocità di elaborazione del prompt è una stima (token input / TTFT) e include la latenza di rete e l'eventuale caricamento del modello.
-- Le porte predefinite di oMLX, Unsloth Studio e text-generation-webui vengono da esempi nella documentazione: verificale all'avvio del server.
+- Le porte predefinite di Unsloth Studio e text-generation-webui vengono da esempi nella documentazione: verificale all'avvio del server.
 
 ## Contribuire
 
