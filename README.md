@@ -28,6 +28,20 @@ A small [Streamlit](https://streamlit.io) app: pick a server and a model, start 
 - English and Italian interface; servers, defaults and texts in easy-to-edit TOML files.
 - Fully local: no database, accounts or telemetry.
 
+## Example results
+
+LFM3 1.7B at 8-bit on an Apple M5 Pro (24 GB), "Short" prompt, 512 tokens, median of 3 warm runs. Effective speed in tok/s.
+
+| Server | IT, reasoning on | IT, no reasoning | EN, reasoning on | EN, no reasoning |
+|---|---:|---:|---:|---:|
+| oMLX | **131.8** | **129.1** | 123.1 | **117.2** |
+| Rapid-MLX | 128.8 | 126.8 | **127.0** | 103.2 |
+| Ollama (mxfp8) | 118.0 | 113.9 | 101.1 | 104.4 |
+
+- oMLX and Rapid-MLX use the same MLX weights (`LiquidAI/LFM3-1.7B-MLX-8bit`).
+- With reasoning on, oMLX and Ollama spend all 512 tokens reasoning, while Rapid-MLX does not reason with this model: those columns are not a like-for-like comparison.
+- The same test can vary by 10–20% from one minute to the next on the same Mac: treat small gaps as a tie and run your own tests.
+
 ## Requirements
 
 - Python 3.11 or newer
