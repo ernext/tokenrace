@@ -13,7 +13,7 @@ Benchmark local LLM servers (Ollama, LM Studio, Rapid-MLX, oMLX, llama.cpp, vLLM
 A small [Streamlit](https://streamlit.io) app: pick a server and a model, start the test and watch TTFT, tokens per second, total time and RAM live, with a summary, a chart and CSV export.
 
 <p align="center">
-  <img src="docs/screenshot.png" alt="TokenRace: LFM3 1.7B at 8-bit on Rapid-MLX, oMLX and Ollama, with streaming response, live metrics and summary" width="900">
+  <img src="docs/tokenrace-en.png" alt="TokenRace: LFM3 1.7B at 8-bit on Rapid-MLX, oMLX and Ollama, with streaming response, live metrics and summary" width="900">
 </p>
 <p align="center"><sub>LFM3 1.7B at 8-bit on Rapid-MLX and oMLX (same MLX weights) and on Ollama (mxfp8), "Short" prompt, no reasoning, 3 runs on one Mac. A single example, not a ranking.</sub></p>
 

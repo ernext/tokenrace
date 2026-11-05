@@ -13,7 +13,7 @@ Confronta la velocità dei server LLM locali (Ollama, LM Studio, Rapid-MLX, oMLX
 Una piccola app [Streamlit](https://streamlit.io): scegli server e modello, avvii il test e vedi in tempo reale TTFT, token al secondo, tempo totale e RAM, con riepilogo, grafico ed export CSV.
 
 <p align="center">
-  <img src="docs/screenshot-it.png" alt="TokenRace: LFM3 1.7B a 8 bit su Rapid-MLX, oMLX e Ollama, con risposta in streaming, misure e riepilogo" width="900">
+  <img src="docs/tokenrace-it.png" alt="TokenRace: LFM3 1.7B a 8 bit su Rapid-MLX, oMLX e Ollama, con risposta in streaming, misure e riepilogo" width="900">
 </p>
 <p align="center"><sub>LFM3 1.7B a 8 bit su Rapid-MLX e oMLX (stessi pesi MLX) e su Ollama (mxfp8), prompt "Breve", senza ragionamento, 3 ripetizioni su un Mac. Un singolo esempio, non una classifica.</sub></p>
 
