@@ -8,7 +8,9 @@
 
 **English** · [Italiano](README.it.md)
 
-Benchmark local LLM servers (Ollama, LM Studio, Rapid-MLX, oMLX, llama.cpp, vLLM and more) with **the exact same measuring code** for all of them.
+An **LLM inference speed test**: compare local inference servers (Ollama, LM Studio, Rapid-MLX, oMLX, llama.cpp, vLLM and more) on your own hardware, with **the exact same measuring code** for all of them.
+
+Speed depends on the combination of model, inference server and hardware: there is no universal winner, and numbers measured elsewhere, with other rules, rarely apply to your machine. **Measure first, then choose.**
 
 A small [Streamlit](https://streamlit.io) app: pick a server and a model, start the test and watch TTFT, tokens per second, total time and RAM live, with a summary, a chart and CSV export.
 
@@ -146,6 +148,7 @@ assets/style.css     visual style
 ## Limitations
 
 - RAM is the whole system's, not just the server's.
+- It measures speed, not the quality of the answers.
 - Prompt processing speed is an estimate (input tokens / TTFT) and includes network latency and any model loading.
 - Default ports for Unsloth Studio and text-generation-webui come from examples in their docs: check them when you start the server.
 
@@ -155,6 +158,8 @@ Issues and pull requests are welcome, especially:
 - confirmations or fixes for ports and "no reasoning" parameters of servers not yet tested;
 - new OpenAI-compatible servers;
 - new translations.
+
+If TokenRace is useful to you, a ⭐ on GitHub is always appreciated.
 
 ## License
 
