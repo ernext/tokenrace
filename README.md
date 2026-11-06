@@ -1,4 +1,6 @@
-# 🏁 TokenRace — Local LLM Speed Test
+<p align="center"><img src="assets/logo/tokenrace-mascot.svg" alt="TokenRace mascot: a running token" width="190"></p>
+
+# TokenRace — Local LLM Speed Test
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org)
 [![Streamlit](https://img.shields.io/badge/Streamlit-app-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io)
@@ -139,6 +141,7 @@ config/
 locales/
   en.toml, it.toml   interface texts
 assets/style.css     visual style
+assets/logo/         mascot, icon and favicon (SVG + PNG)
 ```
 
 **Add a server**: add a `[[server]]` block to `config/servers.toml` and its note under `[server_notes]` in each `locales/*.toml` file.

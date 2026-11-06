@@ -7,6 +7,7 @@ Avvio: streamlit run app.py
 Licenza: MIT
 """
 
+import base64
 import json
 import time
 import uuid
@@ -102,10 +103,15 @@ def make_row(ctx, rip: int, m: dict) -> dict:
 # Sezioni della pagina
 # ---------------------------------------------------------------------------
 
+# Mascotte nell'intestazione, incorporata nella pagina come data URI
+LOGO = "data:image/svg+xml;base64," + base64.b64encode(
+    (ROOT / "assets" / "logo" / "tokenrace-icon.svg").read_bytes()).decode()
+
+
 def render_header(t, n_servers: int, languages: list[str], lang: str) -> str:
     left, right = st.columns([6, 1], vertical_alignment="center")
     left.markdown(
-        f"""<div class="tr-hero"><h1>🏁 Token<span>Race</span></h1>
+        f"""<div class="tr-hero"><h1><img src="{LOGO}" alt="">Token<span>Race</span></h1>
         <p>{t('app.tagline')}</p>
         <span class="tr-pill">{t('app.servers_pill', n=n_servers)}</span></div>""",
         unsafe_allow_html=True)
@@ -333,7 +339,8 @@ def render_results(t, primary_color: str):
 # ---------------------------------------------------------------------------
 
 def main():
-    st.set_page_config(page_title="TokenRace", page_icon="🏁", layout="wide")
+    st.set_page_config(page_title="TokenRace", page_icon=str(ROOT / "assets" / "logo" / "tokenrace-favicon.png"),
+                       layout="wide")
     defaults = load_defaults()
     ui, measure = defaults["ui"], defaults["measure"]
     servers = load_servers()

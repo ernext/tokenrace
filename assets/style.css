@@ -14,7 +14,8 @@ h5 {margin: 0 0 0.6rem 0 !important; padding: 0 !important;}
 /* Intestazione */
 .tr-hero {display: flex; align-items: baseline; gap: 0.8rem; flex-wrap: wrap;
           margin-bottom: 0.6rem;}
-.tr-hero h1 {font-size: 2rem; margin: 0; padding: 0;}
+.tr-hero h1 {font-size: 2rem; margin: 0; padding: 0; display: flex; align-items: center;}
+.tr-hero h1 img {height: 2.6rem; margin-right: 0.45rem;}
 .tr-hero h1 span {color: var(--tr-primary);}
 .tr-hero p {margin: 0; opacity: 0.65; font-size: 0.95rem;}
 .tr-pill {display: inline-block; padding: 0.1rem 0.6rem; border-radius: 999px;
