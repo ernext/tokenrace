@@ -142,6 +142,7 @@ locales/
   en.toml, it.toml   interface texts
 assets/style.css     visual style
 assets/logo/         mascot, icon and favicon (SVG + PNG)
+tools/make_logo.py   regenerates the logo: python tools/make_logo.py --png
 ```
 
 **Add a server**: add a `[[server]]` block to `config/servers.toml` and its note under `[server_notes]` in each `locales/*.toml` file.
