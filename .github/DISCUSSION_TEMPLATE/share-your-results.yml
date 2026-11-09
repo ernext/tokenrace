@@ -1,0 +1,65 @@
+title: "[Results] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for sharing! Results vary from one minute to the next, so more runs and the full CSV make them more useful.
+  - type: input
+    id: hardware
+    attributes:
+      label: Hardware
+      description: CPU/GPU and memory.
+      placeholder: Apple M5 Pro, 24 GB
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: macOS 26.1
+    validations:
+      required: true
+  - type: input
+    id: server
+    attributes:
+      label: Server and version
+      description: If you compared several, list them all.
+      placeholder: Ollama 0.13.0, oMLX 0.4.2
+    validations:
+      required: true
+  - type: input
+    id: model
+    attributes:
+      label: Model and quantization
+      placeholder: LFM3 1.7B, MLX 8-bit
+    validations:
+      required: true
+  - type: dropdown
+    id: preset
+    attributes:
+      label: Preset
+      multiple: true
+      options:
+        - Short
+        - Long
+        - Cache
+    validations:
+      required: true
+  - type: textarea
+    id: results
+    attributes:
+      label: Results table
+      description: Paste the summary table from the app, or write your own Markdown table.
+      placeholder: |
+        | Server | Model | TTFT (s) | Generation (tok/s) | Effective (tok/s) |
+        |---|---|---:|---:|---:|
+        | Ollama | lfm3:1.7b-mxfp8 | 0.07 | 104.9 | 104.4 |
+    validations:
+      required: true
+  - type: textarea
+    id: csv
+    attributes:
+      label: CSV file
+      description: Press «Download CSV» in the app and drag the file here.
+    validations:
+      required: false
