@@ -1,4 +1,4 @@
-<p align="center"><img src="assets/logo/tokenrace-mascot.svg" alt="TokenRace mascot: a running token" width="190"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/ernext/tokenrace/main/assets/logo/tokenrace-mascot.png" alt="TokenRace mascot: a running token" width="190"></p>
 
 # TokenRace — Local LLM Speed Test
 
@@ -17,7 +17,7 @@ Speed depends on the combination of model, inference server and hardware: there 
 A small [Streamlit](https://streamlit.io) app: pick a server and a model, start the test and watch TTFT, tokens per second, total time and RAM live, with a summary, a chart and CSV export.
 
 <p align="center">
-  <img src="docs/tokenrace-en.png" alt="TokenRace: LFM3 1.7B at 8-bit on Rapid-MLX, oMLX and Ollama, with streaming response, live metrics and summary" width="900">
+  <img src="https://raw.githubusercontent.com/ernext/tokenrace/main/docs/tokenrace-en.png" alt="TokenRace: LFM3 1.7B at 8-bit on Rapid-MLX, oMLX and Ollama, with streaming response, live metrics and summary" width="900">
 </p>
 <p align="center"><sub>LFM3 1.7B at 8-bit on Rapid-MLX and oMLX (same MLX weights) and on Ollama (mxfp8), "Short" prompt, no reasoning, 3 runs on one Mac. A single example, not a ranking.</sub></p>
 
@@ -46,6 +46,8 @@ LFM3 1.7B at 8-bit on an Apple M5 Pro (24 GB), "Short" prompt, 512 tokens, media
 - With reasoning on, oMLX and Ollama spend all 512 tokens reasoning, while Rapid-MLX does not reason with this model: those columns are not a like-for-like comparison.
 - The same test can vary by 10–20% from one minute to the next on the same Mac: treat small gaps as a tie and run your own tests.
 
+Got different numbers on your hardware? **[Share your results](https://github.com/ernext/tokenrace/discussions/categories/share-your-results)**.
+
 ## Requirements
 
 - Python 3.11 or newer
@@ -54,6 +56,16 @@ LFM3 1.7B at 8-bit on an Apple M5 Pro (24 GB), "Short" prompt, 512 tokens, media
 Built for Apple Silicon Macs, works on Linux and Windows too.
 
 ## Install
+
+The quickest way needs only [uv](https://docs.astral.sh/uv/getting-started/installation/) (macOS/Linux: `curl -LsSf https://astral.sh/uv/install.sh | sh`):
+
+```bash
+uvx tokenrace
+```
+
+The app opens at http://localhost:8501. Options: `uvx tokenrace --port 8600 --lang it`.
+
+Alternatively, from the source code:
 
 ```bash
 git clone https://github.com/ernext/tokenrace.git
@@ -64,6 +76,8 @@ pip install -r requirements.txt
 ```
 
 ## Run
+
+If you installed from the source code:
 
 ```bash
 streamlit run app.py
@@ -132,6 +146,7 @@ Some models reason anyway: the app shows a warning in that case.
 app.py               Streamlit interface
 tokenrace/
   bench.py           measuring logic (streaming, timing, RAM, token counts), no Streamlit
+  cli.py             the `tokenrace` command
   config.py          reads the TOML files
   i18n.py            translations
 config/

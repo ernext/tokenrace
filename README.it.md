@@ -46,6 +46,8 @@ LFM3 1.7B a 8 bit su Apple M5 Pro (24 GB), prompt "Breve", 512 token, mediana di
 - Con il ragionamento attivo oMLX e Ollama passano tutti i 512 token a ragionare, mentre Rapid-MLX con questo modello non ragiona: quelle colonne non sono un confronto alla pari.
 - Lo stesso test può variare del 10–20% da un minuto all'altro sullo stesso Mac: considera pari le differenze piccole e fai le tue prove.
 
+Hai ottenuto numeri diversi sul tuo hardware? **[Share your results](https://github.com/ernext/tokenrace/discussions/categories/share-your-results)**.
+
 ## Requisiti
 
 - Python 3.11 o superiore
@@ -54,6 +56,16 @@ LFM3 1.7B a 8 bit su Apple M5 Pro (24 GB), prompt "Breve", 512 token, mediana di
 Pensata per Mac con Apple Silicon, funziona anche su Linux e Windows.
 
 ## Installazione
+
+Il modo più rapido richiede solo [uv](https://docs.astral.sh/uv/getting-started/installation/) (macOS/Linux: `curl -LsSf https://astral.sh/uv/install.sh | sh`):
+
+```bash
+uvx tokenrace
+```
+
+L'app si apre su http://localhost:8501. Opzioni: `uvx tokenrace --port 8600 --lang it`.
+
+In alternativa, dal codice sorgente:
 
 ```bash
 git clone https://github.com/ernext/tokenrace.git
@@ -64,6 +76,8 @@ pip install -r requirements.txt
 ```
 
 ## Avvio
+
+Se hai installato dal codice sorgente:
 
 ```bash
 streamlit run app.py
@@ -132,6 +146,7 @@ Alcuni modelli ragionano comunque: in quel caso l'app mostra un avviso.
 app.py               interfaccia Streamlit
 tokenrace/
   bench.py           logica di misura (streaming, cronometro, RAM, token), senza Streamlit
+  cli.py             il comando `tokenrace`
   config.py          lettura dei file TOML
   i18n.py            traduzioni
 config/
