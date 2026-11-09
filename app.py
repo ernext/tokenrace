@@ -9,6 +9,7 @@ Licenza: MIT
 
 import base64
 import json
+import os
 import time
 import uuid
 from datetime import datetime
@@ -59,7 +60,8 @@ def error_text(t, e: bench.ServerError) -> str:
 def pick_language(languages: list[str], default: str) -> str:
     """Lingua indicata nell'URL (?lang=), altrimenti quella predefinita."""
     qp = st.query_params.get("lang")
-    return qp if qp in languages else default
+    env = os.environ.get("TOKENRACE_LANG")  # impostata dal comando `tokenrace --lang`
+    return qp if qp in languages else env if env in languages else default
 
 
 def show_table(t, df: pd.DataFrame):

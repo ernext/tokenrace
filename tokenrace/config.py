@@ -4,7 +4,9 @@ import tomllib
 from dataclasses import dataclass, field
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
+_PACKAGE_DIR = Path(__file__).resolve().parent
+# Nel pacchetto installato i dati stanno in tokenrace/_data, nella repo nella cartella principale
+ROOT = _PACKAGE_DIR / "_data" if (_PACKAGE_DIR / "_data").is_dir() else _PACKAGE_DIR.parent
 CONFIG_DIR = ROOT / "config"
 
 

@@ -4,6 +4,9 @@ venv/
 __pycache__/
 *.pyc
 
+# Pacchetti generati da uv build
+dist/
+
 # Risultati esportati
 *.csv
 

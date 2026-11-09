@@ -1,0 +1,55 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "tokenrace"
+version = "1.0.0"
+description = "LLM inference speed test: compare local inference servers on your own hardware, with the same measuring code for all."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["llm", "inference", "benchmark", "speed-test", "local-llm", "ollama", "lm-studio", "mlx", "streamlit"]
+# Stesse versioni di requirements.txt
+dependencies = [
+    "streamlit==1.66.1",
+    "requests==2.34.2",
+    "psutil==7.2.2",
+    "pandas==3.1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/ernext/tokenrace"
+Repository = "https://github.com/ernext/tokenrace"
+Issues = "https://github.com/ernext/tokenrace/issues"
+Changelog = "https://github.com/ernext/tokenrace/blob/main/CHANGELOG.md"
+
+[project.scripts]
+tokenrace = "tokenrace.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["tokenrace"]
+
+# Nel pacchetto l'app e i suoi dati stanno in tokenrace/_data (vedi ROOT in tokenrace/config.py)
+[tool.hatch.build.targets.wheel.force-include]
+"app.py" = "tokenrace/_data/app.py"
+"config" = "tokenrace/_data/config"
+"locales" = "tokenrace/_data/locales"
+"assets" = "tokenrace/_data/assets"
+".streamlit/config.toml" = "tokenrace/_data/.streamlit/config.toml"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/tokenrace",
+    "/app.py",
+    "/config",
+    "/locales",
+    "/assets",
+    "/.streamlit/config.toml",
+    "/README.md",
+    "/README.it.md",
+    "/LICENSE",
+    "/CHANGELOG.md",
+    "/requirements.txt",
+]
