@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.1 — 2026-11-10
+
+### Fixed
+
+- With "No reasoning" off, servers with a tested parameter (Rapid-MLX, oMLX, LM Studio) are now asked for reasoning explicitly, so they all run in the same mode. Rapid-MLX turns reasoning off when a request states no preference ([Rapid-MLX#5691](https://github.com/raullenchai/Rapid-MLX/issues/5691)). Ollama keeps its default, and untested servers get no extra field.
+- Rapid-MLX marked as tested for the "No reasoning" parameter.
+- README: removed the "reasoning on" columns from the example results until they are re-measured, and corrected the note on Rapid-MLX.
+
 ## 1.0.0 — 2026-11-10
 
 First public release.
