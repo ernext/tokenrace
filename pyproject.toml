@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "tokenrace"
-version = "1.0.0"
+version = "1.0.1"
 description = "LLM inference speed test: compare local inference servers on your own hardware, with the same measuring code for all."
 readme = "README.md"
 requires-python = ">=3.11"
