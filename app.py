@@ -202,6 +202,7 @@ def render_prompt_form(t, server, presets, defaults, model):
                           help=t("help.no_reasoning") + "\n\n"
                           + t("msg.nr_help_suffix", server=server.name, fields=fields) + f" ({state}).")
         params["no_reasoning"] = server.no_reasoning if nr_on else None
+        params["reasoning_fields"] = server.no_reasoning if nr_on else server.reasoning_on
         if nr_on:
             st.caption(t("msg.nr_sends", fields=fields, state=state))
         if stop:
@@ -240,7 +241,7 @@ def run_test(t, ctx, prompt, run_id_label, measure, resp_box, status_box, live_b
 
         try:
             m = bench.run_once(ctx["base_url"], ctx["model"], text, p["temperature"], p["seed"],
-                               p["max_tokens"], on_update, p["no_reasoning"], ctx["api_key"],
+                               p["max_tokens"], on_update, p["reasoning_fields"], ctx["api_key"],
                                ram_interval=measure["ram_interval_s"],
                                timeout=(measure["connect_timeout_s"], measure["read_timeout_s"]))
         except bench.ServerError as e:
