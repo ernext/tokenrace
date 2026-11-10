@@ -36,14 +36,14 @@ Una piccola app [Streamlit](https://streamlit.io): scegli server e modello, avvi
 
 LFM3 1.7B a 8 bit su Apple M5 Pro (24 GB), prompt "Breve", 512 token, mediana di 3 ripetizioni a caldo. Velocità effettiva in tok/s.
 
-| Server | IT, ragionamento attivo | IT, senza ragionamento | EN, ragionamento attivo | EN, senza ragionamento |
-|---|---:|---:|---:|---:|
-| oMLX | **131,8** | **129,1** | 123,1 | **117,2** |
-| Rapid-MLX | 128,8 | 126,8 | **127,0** | 103,2 |
-| Ollama (mxfp8) | 118,0 | 113,9 | 101,1 | 104,4 |
+| Server | IT, senza ragionamento | EN, senza ragionamento |
+|---|---:|---:|
+| oMLX | **129,1** | **117,2** |
+| Rapid-MLX | 126,8 | 103,2 |
+| Ollama (mxfp8) | 113,9 | 104,4 |
 
 - oMLX e Rapid-MLX usano gli stessi pesi MLX (`LiquidAI/LFM3-1.7B-MLX-8bit`).
-- Con il ragionamento attivo oMLX e Ollama passano tutti i 512 token a ragionare, mentre Rapid-MLX con questo modello non ragiona: quelle colonne non sono un confronto alla pari.
+- Quando una richiesta non indica una preferenza, Rapid-MLX spegne il ragionamento mentre Ollama e oMLX lo lasciano acceso ([dettagli](https://github.com/raullenchai/Rapid-MLX/issues/5691)). Le colonne "ragionamento attivo" sono tolte finché non vengono rimisurate con tutti i server nella stessa modalità.
 - Lo stesso test può variare del 10–20% da un minuto all'altro sullo stesso Mac: considera pari le differenze piccole e fai le tue prove.
 
 Hai ottenuto numeri diversi sul tuo hardware? **[Share your results](https://github.com/ernext/tokenrace/discussions/categories/share-your-results)**.
@@ -135,10 +135,13 @@ L'interruttore **Senza ragionamento** invia un parametro diverso a seconda del s
 - Ollama: `reasoning_effort: "none"` ✅
 - LM Studio: `reasoning_effort: "none"` più `chat_template_kwargs` ✅
 - oMLX: `chat_template_kwargs: {"enable_thinking": false}` ✅
+- Rapid-MLX: `chat_template_kwargs: {"enable_thinking": false}` ✅
 - text-generation-webui: `enable_thinking: false`
 - tutti gli altri (llama.cpp, MLX, vLLM, SGLang…): `chat_template_kwargs: {"enable_thinking": false}`
 
 Alcuni modelli ragionano comunque: in quel caso l'app mostra un avviso.
+
+Con l'interruttore spento, ai server con il parametro provato il ragionamento viene chiesto in modo esplicito (`enable_thinking: true`), così girano tutti nella stessa modalità. Ollama non ha bisogno di campi perché il ragionamento è il suo predefinito; ai server non provati non viene inviato nessun campo in più.
 
 ## Struttura del progetto
 

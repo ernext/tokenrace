@@ -36,14 +36,14 @@ A small [Streamlit](https://streamlit.io) app: pick a server and a model, start 
 
 LFM3 1.7B at 8-bit on an Apple M5 Pro (24 GB), "Short" prompt, 512 tokens, median of 3 warm runs. Effective speed in tok/s.
 
-| Server | IT, reasoning on | IT, no reasoning | EN, reasoning on | EN, no reasoning |
-|---|---:|---:|---:|---:|
-| oMLX | **131.8** | **129.1** | 123.1 | **117.2** |
-| Rapid-MLX | 128.8 | 126.8 | **127.0** | 103.2 |
-| Ollama (mxfp8) | 118.0 | 113.9 | 101.1 | 104.4 |
+| Server | IT, no reasoning | EN, no reasoning |
+|---|---:|---:|
+| oMLX | **129.1** | **117.2** |
+| Rapid-MLX | 126.8 | 103.2 |
+| Ollama (mxfp8) | 113.9 | 104.4 |
 
 - oMLX and Rapid-MLX use the same MLX weights (`LiquidAI/LFM3-1.7B-MLX-8bit`).
-- With reasoning on, oMLX and Ollama spend all 512 tokens reasoning, while Rapid-MLX does not reason with this model: those columns are not a like-for-like comparison.
+- When a request states no preference, Rapid-MLX turns reasoning off while Ollama and oMLX leave it on ([details](https://github.com/raullenchai/Rapid-MLX/issues/5691)). The "reasoning on" columns are removed until they are re-measured with every server in the same mode.
 - The same test can vary by 10–20% from one minute to the next on the same Mac: treat small gaps as a tie and run your own tests.
 
 Got different numbers on your hardware? **[Share your results](https://github.com/ernext/tokenrace/discussions/categories/share-your-results)**.
@@ -135,10 +135,13 @@ The **No reasoning** switch sends a different parameter depending on the server 
 - Ollama: `reasoning_effort: "none"` ✅
 - LM Studio: `reasoning_effort: "none"` plus `chat_template_kwargs` ✅
 - oMLX: `chat_template_kwargs: {"enable_thinking": false}` ✅
+- Rapid-MLX: `chat_template_kwargs: {"enable_thinking": false}` ✅
 - text-generation-webui: `enable_thinking: false`
 - all others (llama.cpp, MLX, vLLM, SGLang…): `chat_template_kwargs: {"enable_thinking": false}`
 
 Some models reason anyway: the app shows a warning in that case.
+
+With the switch off, servers with a tested parameter are asked for reasoning explicitly (`enable_thinking: true`), so they all run in the same mode. Ollama needs no field because reasoning is its default; untested servers get no extra field.
 
 ## Project structure
 
