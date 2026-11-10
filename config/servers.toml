@@ -8,6 +8,9 @@
 #   no_reasoning         campi aggiunti alla richiesta con "Senza ragionamento"
 #                        (se manca si usa [no_reasoning_default])
 #   no_reasoning_tested  true se il parametro è stato verificato con questo server
+#   reasoning_on         campi aggiunti con "Senza ragionamento" spento, solo se verificato
+#                        (se manca: ogni enable_thinking = false di no_reasoning diventa true,
+#                        gli altri campi si omettono)
 
 [no_reasoning_default]
 # Convenzione dei server basati su llama.cpp, MLX, vLLM e SGLang
@@ -37,6 +40,7 @@ id = "rapidmlx"
 name = "Rapid-MLX"
 url = "http://localhost:7659/v1"
 start = "rapid-mlx serve <model> --port 8000"
+no_reasoning_tested = true  # https://github.com/raullenchai/Rapid-MLX/issues/5691
 
 [[server]]
 id = "omlx"
