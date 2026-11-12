@@ -243,4 +243,6 @@ def run_once(base_url: str, model: str, prompt: str, temperature: float, seed: i
         "ttft_answer": t_answer - t_send if t_answer is not None else None,
         "tok_s_visible": (tok_answer / (t_last - t_send)
                           if tok_answer > 0 and t_last > t_send else None),
+        # Token di ragionamento per ogni token visibile (0 senza ragionamento)
+        "reasoning_ratio": tok_reason / tok_answer if tok_answer > 0 else None,
     }

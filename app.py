@@ -24,15 +24,20 @@ from tokenrace.i18n import Translator, language_info
 
 # Metriche riassunte nella tabella di riepilogo (chiavi interne del CSV)
 SUMMARY_METRICS = ["ttft", "tok_s_gen", "tok_s_eff", "total", "prompt_tok_s"]
-# Metriche sulla sola risposta visibile: nel riepilogo solo se c'è ragionamento
-VISIBLE_METRICS = ["ttft_answer", "tok_s_visible"]
+# Metriche sulla sola risposta visibile (nel riepilogo solo se c'è ragionamento)
+VISIBLE_METRICS = ["ttft_answer", "tok_s_visible", "reasoning_ratio"]
+# Ordine del riepilogo con ragionamento: TTFT accanto al TTFT risposta e
+# velocità "visibile, totale, rapporto" affiancate
+SUMMARY_REASONING = ["ttft", "ttft_answer", "tok_s_gen", "tok_s_visible", "tok_s_eff",
+                     "reasoning_ratio", "total", "prompt_tok_s"]
 # Colonne della tabella delle ripetizioni del test in corso
 RUN_COLUMNS = ["run", "cold"] + SUMMARY_METRICS + ["tok_out"]
 # Spiegazione (sezione [help]) di ciascuna colonna; le altre usano [colhelp]
 COLUMN_HELP = {"ttft": "help.ttft", "tok_s_gen": "help.gen", "tok_s_eff": "help.eff",
                "total": "help.total", "prompt_tok_s": "help.prompt_speed",
                "ram_before": "help.ram_before", "ram_peak": "help.ram_peak",
-               "ttft_answer": "help.ttft_answer", "tok_s_visible": "help.visible"}
+               "ttft_answer": "help.ttft_answer", "tok_s_visible": "help.visible",
+               "reasoning_ratio": "help.ratio"}
 PRESET_IDS = ["short", "long", "cache"]
 
 
@@ -110,7 +115,7 @@ def make_row(ctx, rip: int, m: dict) -> dict:
         **{k: m[k] for k in ("ttft", "tok_s_gen", "tok_s_eff", "total", "tok_in", "tok_out",
                              "tok_reason", "tok_answer", "prompt_tok_s", "ram_before",
                              "ram_peak", "estimated", "split_estimated",
-                             "ttft_answer", "tok_s_visible")},
+                             "ttft_answer", "tok_s_visible", "reasoning_ratio")},
     }
 
 
@@ -291,6 +296,8 @@ def run_test(t, ctx, prompt, run_id_label, measure, resp_box, status_box, live_b
                          border=True)
                 b.metric(t("metric.visible"), approx + fmt(m["tok_s_visible"], 1),
                          help=t("help.visible"), border=True)
+                c.metric(t("metric.ratio"), approx + fmt(m["reasoning_ratio"]),
+                         help=t("help.ratio"), border=True)
             st.caption(t("msg.ram_note"))
             if m["estimated"]:
                 st.warning(t("msg.estimated"))
@@ -318,16 +325,21 @@ def render_results(t, primary_color: str):
         warm = df[~df["cold"]]
         medians, mins, maxs = [], [], []
         reasoned = (df["tok_reason"] > 0) | (df["ttft_answer"] != df["ttft"])
-        for m in SUMMARY_METRICS + (VISIBLE_METRICS if reasoned.any() else []):
+        for m in SUMMARY_REASONING if reasoned.any() else SUMMARY_METRICS:
             medians.append(warm.groupby(keys)[m].median().rename(f"{m}·median"))
             mins.append(df.groupby(keys)[m].min().rename(f"{m}·min"))
             maxs.append(df.groupby(keys)[m].max().rename(f"{m}·max"))
-        summary = pd.concat(medians + mins + maxs, axis=1).reset_index()
+        # Ripartizione ragionamento/risposta stimata: visibile e rapporto sono stime
+        split_est = reasoned.any() and df["split_estimated"].any()
+        extra = [df.groupby(keys)["split_estimated"].any()] if split_est else []
+        summary = pd.concat(medians + mins + maxs + extra, axis=1).reset_index()
 
         g1, g2 = st.columns([3, 2])
         with g1:
             st.markdown(t("label.summary"))
             show_table(t, summary.round(2))
+            if split_est:
+                st.caption(t("msg.summary_estimated"))
         with g2:
             st.markdown(t("label.chart"))
             if warm.empty:

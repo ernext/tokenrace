@@ -75,6 +75,7 @@ ram_before = "RAM before (GB)"
 ram_peak = "RAM peak (GB)"
 ttft_answer = "Answer TTFT (s)"
 visible = "Visible (tok/s)"
+ratio = "Reason./answer ratio"
 
 [msg]
 run_status = "Run {i}/{n}"
@@ -85,6 +86,7 @@ ram_note = "RAM = memory in use on the whole system, not just the server."
 estimated = "⚠️ Estimated count: the server sent no usage, tokens counted from chunks."
 reasoning_still = "⚠️ Reasoning still on: this server or model ignored the request."
 split_estimated = "Reasoning/answer split estimated from chunks (the server does not provide it)."
+summary_estimated = "Visible speed and reasoning/answer ratio are estimated for the rows marked in «Reasoning/answer estimated» (the server does not provide the split)."
 stopped = "Test stopped. Completed runs have been saved."
 no_results = "No results yet. Pick a server and model, then press «Start test»."
 need_two = "At least 2 runs are needed to compute the median."
@@ -136,6 +138,7 @@ ram_before = "RAM in use on the whole system right before the request."
 ram_peak = "Highest RAM in use on the whole system during the request (sampled every 0.5 s)."
 ttft_answer = "Seconds from sending the request to the first token of the visible answer, reasoning excluded. Empty if the model only reasoned."
 visible = "Visible answer speed: answer tokens / (last token − request sent). Reasoning time counts as waiting. ≈ = answer tokens estimated."
+ratio = "Reasoning tokens for each visible answer token: reasoning tokens / answer tokens. 0 without reasoning. ≈ = estimated split."
 download = "Downloads every run of this session as a CSV file."
 clear = "Clears this session's results."
 
@@ -170,6 +173,7 @@ estimated = "Estimated count"
 split_estimated = "Reasoning/answer estimated"
 ttft_answer = "Answer TTFT (s)"
 tok_s_visible = "Visible speed (tok/s)"
+reasoning_ratio = "Reasoning/answer ratio"
 
 # Column explanations (? icon in tables)
 [colhelp]
