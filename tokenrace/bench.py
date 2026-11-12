@@ -133,6 +133,7 @@ def run_once(base_url: str, model: str, prompt: str, temperature: float, seed: i
     n_chunk_reasoning = n_chunk_content = 0
     usage = None
     t_first = t_last = None
+    t_answer = None  # primo chunk con testo visibile (delta.content)
 
     try:
         t_send = time.perf_counter()  # timer avviato subito prima dell'invio
@@ -180,6 +181,8 @@ def run_once(base_url: str, model: str, prompt: str, temperature: float, seed: i
                         reasoning.append(r_txt)
                         n_chunk_reasoning += 1
                     if c_txt:
+                        if t_answer is None:
+                            t_answer = now
                         content.append(c_txt)
                         n_chunk_content += 1
                     if on_update:
@@ -235,4 +238,9 @@ def run_once(base_url: str, model: str, prompt: str, temperature: float, seed: i
         "split_estimated": split_estimated,
         "reasoning": "".join(reasoning),
         "content": "".join(content),
+        # Metriche sulla sola risposta visibile: con ragionamento separato il
+        # TTFT e i tok/s sopra includono anche i token di ragionamento.
+        "ttft_answer": t_answer - t_send if t_answer is not None else None,
+        "tok_s_visible": (tok_answer / (t_last - t_send)
+                          if tok_answer > 0 and t_last > t_send else None),
     }
