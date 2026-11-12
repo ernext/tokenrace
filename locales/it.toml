@@ -73,6 +73,8 @@ prompt_speed = "Prompt (tok/s)"
 split = "Ragion./risp."
 ram_before = "RAM prima (GB)"
 ram_peak = "RAM picco (GB)"
+ttft_answer = "TTFT risposta (s)"
+visible = "Visibile (tok/s)"
 
 [msg]
 run_status = "Ripetizione {i}/{n}"
@@ -121,7 +123,7 @@ repetitions = "Quante volte ripetere la prova. La prima è «a freddo» ed esclu
 start = "Avvia le ripetizioni sul server e modello scelti."
 stop = "Interrompe il test. Le ripetizioni già completate restano salvate."
 no_reasoning = "Chiede al server di non ragionare, con il parametro adatto a ciascun server. Alcuni modelli ragionano comunque: in quel caso compare un avviso."
-ttft = "Time To First Token: secondi dall'invio della richiesta al primo token ricevuto."
+ttft = "Time To First Token: secondi dall'invio della richiesta al primo token ricevuto, ragionamento incluso."
 gen = "Velocità di generazione pura: (token output − 1) / (ultimo token − primo token)."
 eff = "Velocità vista dall'utente, attesa iniziale inclusa: token output / (ultimo token − invio)."
 total = "Secondi dall'invio della richiesta alla fine dello streaming."
@@ -132,6 +134,8 @@ prompt_speed = "Velocità di elaborazione del prompt, stima: token input / TTFT.
 split = "Ragionamento / risposta: token spesi a ragionare e token della risposta vera e propria."
 ram_before = "RAM in uso nell'intero sistema subito prima della richiesta."
 ram_peak = "RAM massima in uso nell'intero sistema durante la richiesta (campionata ogni 0,5 s)."
+ttft_answer = "Secondi dall'invio della richiesta al primo token della risposta visibile, ragionamento escluso. Vuoto se il modello ha solo ragionato."
+visible = "Velocità della risposta visibile: token risposta / (ultimo token − invio). Il tempo di ragionamento conta come attesa. ≈ = token risposta stimati."
 download = "Scarica tutte le ripetizioni della sessione in un file CSV."
 clear = "Cancella lo storico dei risultati di questa sessione."
 
@@ -164,6 +168,8 @@ ram_before = "RAM sistema prima (GB)"
 ram_peak = "RAM sistema picco (GB)"
 estimated = "Conteggio stimato"
 split_estimated = "Ragionamento/risposta stimati"
+ttft_answer = "TTFT risposta (s)"
+tok_s_visible = "Velocità visibile (tok/s)"
 
 # Spiegazioni delle colonne (icona ? nelle tabelle)
 [colhelp]
