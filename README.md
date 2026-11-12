@@ -115,10 +115,11 @@ Notes:
 
 ## Metrics
 
-- **TTFT**: time from sending the request to the first non-empty chunk (content or reasoning).
+- **TTFT**: time from sending the request to the first non-empty chunk (content or reasoning, so reasoning included).
 - **Generation (tok/s)**: (output tokens − 1) / (last token − first token).
 - **Effective speed (tok/s)**: output tokens / (last token − request sent).
 - **Prompt processing (estimate)**: input tokens / TTFT.
+- **Answer TTFT** and **Visible speed (tok/s)**: the same measures for the visible answer only, shown when the model reasons. Answer TTFT runs to the first chunk with answer text; visible speed is answer tokens / (last token − request sent), so reasoning time counts as waiting. Without reasoning they equal TTFT and effective speed. Empty if the model only reasoned.
 - **RAM**: memory in use on the whole system, sampled every 0.5 s (value before the test and peak).
 
 Tokens come from the `usage` field. If the server does not send it, chunks are counted and an "estimated count" warning appears.
@@ -171,6 +172,8 @@ tools/make_logo.py   regenerates the logo: python tools/make_logo.py --png
 
 - RAM is the whole system's, not just the server's.
 - It measures speed, not the quality of the answers.
+- Reasoning is told apart from the answer only when the server sends it in a separate field (`reasoning_content` or `reasoning`). If it arrives inside the text (for example between `<think>` tags), answer TTFT and visible speed equal TTFT and effective speed.
+- Some servers report more reasoning tokens than total tokens (seen on oMLX): answer tokens then count as 0 and visible speed stays empty.
 - Prompt processing speed is an estimate (input tokens / TTFT) and includes network latency and any model loading.
 - Default ports for Unsloth Studio and text-generation-webui come from examples in their docs: check them when you start the server.
 

@@ -115,10 +115,11 @@ Note:
 
 ## Misure
 
-- **TTFT**: tempo dall'invio della richiesta al primo chunk non vuoto (contenuto o ragionamento).
+- **TTFT**: tempo dall'invio della richiesta al primo chunk non vuoto (contenuto o ragionamento, quindi ragionamento incluso).
 - **Generazione (tok/s)**: (token output − 1) / (ultimo token − primo token).
 - **Velocità effettiva (tok/s)**: token output / (ultimo token − invio richiesta).
 - **Elaborazione prompt (stima)**: token input / TTFT.
+- **TTFT risposta** e **Velocità visibile (tok/s)**: le stesse misure sulla sola risposta visibile, mostrate quando il modello ragiona. Il TTFT risposta arriva al primo chunk con testo della risposta; la velocità visibile è token risposta / (ultimo token − invio richiesta), quindi il tempo di ragionamento conta come attesa. Senza ragionamento coincidono con TTFT e velocità effettiva. Vuote se il modello ha solo ragionato.
 - **RAM**: memoria in uso dell'intero sistema, campionata ogni 0,5 s (valore prima del test e picco).
 
 I token arrivano dal campo `usage`. Se il server non lo fornisce, vengono contati i chunk e compare l'avviso "conteggio stimato".
@@ -171,6 +172,8 @@ tools/make_logo.py   rigenera il logo: python tools/make_logo.py --png
 
 - La RAM è quella dell'intero sistema, non del solo server.
 - Misura la velocità, non la qualità delle risposte.
+- Il ragionamento è distinto dalla risposta solo se il server lo invia in un campo separato (`reasoning_content` o `reasoning`). Se arriva dentro il testo (ad esempio tra tag `<think>`), TTFT risposta e velocità visibile coincidono con TTFT e velocità effettiva.
+- Alcuni server dichiarano più token di ragionamento che token totali (visto su oMLX): i token della risposta risultano 0 e la velocità visibile resta vuota.
 - La velocità di elaborazione del prompt è una stima (token input / TTFT) e include la latenza di rete e l'eventuale caricamento del modello.
 - Le porte predefinite di Unsloth Studio e text-generation-webui vengono da esempi nella documentazione: verificale all'avvio del server.
 
