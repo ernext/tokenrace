@@ -4,7 +4,7 @@
 
 ### Added
 
-- Answer TTFT and visible speed (tok/s): time to the first token of the visible answer and answer tokens / (last token − request sent). Shown after each run when the model reasons, in the summary (median, min, max) and as two new columns at the end of the CSV. Existing metrics and CSV columns are unchanged.
+- Answer TTFT, visible speed (tok/s) and reasoning/answer ratio: time to the first token of the visible answer, answer tokens / (last token − request sent), and reasoning tokens / answer tokens. Shown after each run when the model reasons and in the summary (median, min, max), where visible speed, effective speed and ratio sit side by side and are marked when the split is estimated. Three new columns at the end of the CSV; existing metrics and CSV columns are unchanged. The idea came from the discussion on [Why your local LLM tok/s numbers don't match mine](https://dev.to/ernext/why-your-local-llm-toks-numbers-dont-match-mine-5dn6).
 
 ### Changed
 
