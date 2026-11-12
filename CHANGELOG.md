@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.2 — 2026-11-12
+
+### Added
+
+- Answer TTFT and visible speed (tok/s): time to the first token of the visible answer and answer tokens / (last token − request sent). Shown after each run when the model reasons, in the summary (median, min, max) and as two new columns at the end of the CSV. Existing metrics and CSV columns are unchanged.
+
+### Changed
+
+- TTFT help text now says it includes reasoning.
+
 ## 1.0.1 — 2026-11-10
 
 ### Fixed
