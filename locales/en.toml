@@ -73,6 +73,8 @@ prompt_speed = "Prompt (tok/s)"
 split = "Reason./answer"
 ram_before = "RAM before (GB)"
 ram_peak = "RAM peak (GB)"
+ttft_answer = "Answer TTFT (s)"
+visible = "Visible (tok/s)"
 
 [msg]
 run_status = "Run {i}/{n}"
@@ -121,7 +123,7 @@ repetitions = "How many times to repeat the test. The first run is «cold» and 
 start = "Starts the runs on the selected server and model."
 stop = "Stops the test. Completed runs are kept."
 no_reasoning = "Asks the server not to reason, using the right parameter for each server. Some models reason anyway: a warning appears in that case."
-ttft = "Time To First Token: seconds from sending the request to the first token received."
+ttft = "Time To First Token: seconds from sending the request to the first token received, reasoning included."
 gen = "Pure generation speed: (output tokens − 1) / (last token − first token)."
 eff = "Speed as the user sees it, initial wait included: output tokens / (last token − request sent)."
 total = "Seconds from sending the request to the end of the stream."
@@ -132,6 +134,8 @@ prompt_speed = "Prompt processing speed, estimate: input tokens / TTFT. Also inc
 split = "Reasoning / answer: tokens spent reasoning and tokens of the actual answer."
 ram_before = "RAM in use on the whole system right before the request."
 ram_peak = "Highest RAM in use on the whole system during the request (sampled every 0.5 s)."
+ttft_answer = "Seconds from sending the request to the first token of the visible answer, reasoning excluded. Empty if the model only reasoned."
+visible = "Visible answer speed: answer tokens / (last token − request sent). Reasoning time counts as waiting. ≈ = answer tokens estimated."
 download = "Downloads every run of this session as a CSV file."
 clear = "Clears this session's results."
 
@@ -164,6 +168,8 @@ ram_before = "System RAM before (GB)"
 ram_peak = "System RAM peak (GB)"
 estimated = "Estimated count"
 split_estimated = "Reasoning/answer estimated"
+ttft_answer = "Answer TTFT (s)"
+tok_s_visible = "Visible speed (tok/s)"
 
 # Column explanations (? icon in tables)
 [colhelp]

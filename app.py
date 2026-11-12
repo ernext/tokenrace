@@ -24,12 +24,15 @@ from tokenrace.i18n import Translator, language_info
 
 # Metriche riassunte nella tabella di riepilogo (chiavi interne del CSV)
 SUMMARY_METRICS = ["ttft", "tok_s_gen", "tok_s_eff", "total", "prompt_tok_s"]
+# Metriche sulla sola risposta visibile: nel riepilogo solo se c'è ragionamento
+VISIBLE_METRICS = ["ttft_answer", "tok_s_visible"]
 # Colonne della tabella delle ripetizioni del test in corso
 RUN_COLUMNS = ["run", "cold"] + SUMMARY_METRICS + ["tok_out"]
 # Spiegazione (sezione [help]) di ciascuna colonna; le altre usano [colhelp]
 COLUMN_HELP = {"ttft": "help.ttft", "tok_s_gen": "help.gen", "tok_s_eff": "help.eff",
                "total": "help.total", "prompt_tok_s": "help.prompt_speed",
-               "ram_before": "help.ram_before", "ram_peak": "help.ram_peak"}
+               "ram_before": "help.ram_before", "ram_peak": "help.ram_peak",
+               "ttft_answer": "help.ttft_answer", "tok_s_visible": "help.visible"}
 PRESET_IDS = ["short", "long", "cache"]
 
 
@@ -78,6 +81,15 @@ def show_table(t, df: pd.DataFrame):
     st.dataframe(df.rename(columns=names), hide_index=True, width="stretch", column_config=config)
 
 
+def has_reasoning(m) -> bool:
+    """True se nel run c'è stato ragionamento separato dalla risposta visibile.
+
+    Oltre ai token dichiarati si guarda se il TTFT della risposta differisce dal
+    TTFT: un server può inviare reasoning_content dichiarando 0 token di ragionamento.
+    """
+    return m["tok_reason"] > 0 or m["ttft_answer"] != m["ttft"]
+
+
 def make_row(ctx, rip: int, m: dict) -> dict:
     p = ctx["params"]
     return {
@@ -97,7 +109,8 @@ def make_row(ctx, rip: int, m: dict) -> dict:
         "no_reasoning_fields": json.dumps(p["no_reasoning"]) if p["no_reasoning"] else "",
         **{k: m[k] for k in ("ttft", "tok_s_gen", "tok_s_eff", "total", "tok_in", "tok_out",
                              "tok_reason", "tok_answer", "prompt_tok_s", "ram_before",
-                             "ram_peak", "estimated", "split_estimated")},
+                             "ram_peak", "estimated", "split_estimated",
+                             "ttft_answer", "tok_s_visible")},
     }
 
 
@@ -271,6 +284,13 @@ def run_test(t, ctx, prompt, run_id_label, measure, resp_box, status_box, live_b
             b.metric(t("metric.ram_before"), f"{m['ram_before']:.1f}", help=t("help.ram_before"),
                      border=True)
             c.metric(t("metric.ram_peak"), f"{m['ram_peak']:.1f}", help=t("help.ram_peak"), border=True)
+            if has_reasoning(m):
+                # "≈": i token della risposta vengono da una ripartizione stimata
+                approx = "≈" if m["split_estimated"] and m["tok_s_visible"] is not None else ""
+                a.metric(t("metric.ttft_answer"), fmt(m["ttft_answer"]), help=t("help.ttft_answer"),
+                         border=True)
+                b.metric(t("metric.visible"), approx + fmt(m["tok_s_visible"], 1),
+                         help=t("help.visible"), border=True)
             st.caption(t("msg.ram_note"))
             if m["estimated"]:
                 st.warning(t("msg.estimated"))
@@ -291,11 +311,14 @@ def render_results(t, primary_color: str):
             st.info(t("msg.no_results"))
             return
         df = pd.DataFrame(ss.history)
+        for c in VISIBLE_METRICS:  # tutte None diventano NaN: mediana/min/max senza errori
+            df[c] = pd.to_numeric(df[c])
         df["prompt_type"] = df["prompt_type"].map(lambda i: t(f"preset.{i}"))
         keys = ["server", "model", "prompt_type"]
         warm = df[~df["cold"]]
         medians, mins, maxs = [], [], []
-        for m in SUMMARY_METRICS:
+        reasoned = (df["tok_reason"] > 0) | (df["ttft_answer"] != df["ttft"])
+        for m in SUMMARY_METRICS + (VISIBLE_METRICS if reasoned.any() else []):
             medians.append(warm.groupby(keys)[m].median().rename(f"{m}·median"))
             mins.append(df.groupby(keys)[m].min().rename(f"{m}·min"))
             maxs.append(df.groupby(keys)[m].max().rename(f"{m}·max"))
