@@ -75,6 +75,7 @@ ram_before = "RAM prima (GB)"
 ram_peak = "RAM picco (GB)"
 ttft_answer = "TTFT risposta (s)"
 visible = "Visibile (tok/s)"
+ratio = "Rapporto ragion./risp."
 
 [msg]
 run_status = "Ripetizione {i}/{n}"
@@ -85,6 +86,7 @@ ram_note = "RAM = memoria in uso dell'intero sistema, non del solo server."
 estimated = "⚠️ Conteggio stimato: il server non ha fornito usage, token contati dai chunk."
 reasoning_still = "⚠️ Ragionamento ancora attivo: questo server o modello ha ignorato la richiesta."
 split_estimated = "Divisione ragionamento/risposta stimata dai chunk (il server non la fornisce)."
+summary_estimated = "Velocità visibile e rapporto ragionamento/risposta sono stimati per le righe segnate in «Ragionamento/risposta stimati» (il server non fornisce la ripartizione)."
 stopped = "Test interrotto. Le ripetizioni completate sono state salvate."
 no_results = "Nessun risultato ancora. Scegli server e modello, poi premi «Avvia test»."
 need_two = "Servono almeno 2 ripetizioni per calcolare la mediana."
@@ -136,6 +138,7 @@ ram_before = "RAM in uso nell'intero sistema subito prima della richiesta."
 ram_peak = "RAM massima in uso nell'intero sistema durante la richiesta (campionata ogni 0,5 s)."
 ttft_answer = "Secondi dall'invio della richiesta al primo token della risposta visibile, ragionamento escluso. Vuoto se il modello ha solo ragionato."
 visible = "Velocità della risposta visibile: token risposta / (ultimo token − invio). Il tempo di ragionamento conta come attesa. ≈ = token risposta stimati."
+ratio = "Token di ragionamento per ogni token della risposta visibile: token ragionamento / token risposta. 0 senza ragionamento. ≈ = ripartizione stimata."
 download = "Scarica tutte le ripetizioni della sessione in un file CSV."
 clear = "Cancella lo storico dei risultati di questa sessione."
 
@@ -170,6 +173,7 @@ estimated = "Conteggio stimato"
 split_estimated = "Ragionamento/risposta stimati"
 ttft_answer = "TTFT risposta (s)"
 tok_s_visible = "Velocità visibile (tok/s)"
+reasoning_ratio = "Rapporto ragionamento/risposta"
 
 # Spiegazioni delle colonne (icona ? nelle tabelle)
 [colhelp]
