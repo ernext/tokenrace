@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.3 — 2026-11-16
+
+### Added
+
+- Prompt hash column at the end of the CSV: the first 12 hex characters of the SHA-256 of the exact messages sent (run ID excluded) plus max tokens, temperature, seed and the reasoning fields sent. The same workload always gets the same hash, so two CSVs can be compared even if the prompts change. Existing metrics, interface and CSV columns are unchanged. Suggested by a reader in the discussion on [Why your local LLM tok/s numbers don't match mine](https://dev.to/ernext/why-your-local-llm-toks-numbers-dont-match-mine-5dn6).
+- Unit tests for the prompt hash (`python -m unittest discover tests`).
+
 ## 1.0.2 — 2026-11-12
 
 ### Added
