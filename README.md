@@ -21,12 +21,24 @@ A small [Streamlit](https://streamlit.io) app: pick a server and a model, start 
 </p>
 <p align="center"><sub>LFM3 1.7B at 8-bit on Rapid-MLX and oMLX (same MLX weights) and on Ollama (mxfp8), "Short" prompt, no reasoning, 3 runs on one Mac. A single example, not a ranking.</sub></p>
 
+## Why measure it yourself: a reasoning model example
+
+On reasoning models, the usual numbers can say the opposite of what you experience. qwen3.5:4b on Ollama, "Short" prompt, Apple M5 Pro (24 GB):
+
+| | TTFT | Answer TTFT | Effective (tok/s) | Visible (tok/s) | Reasoning/answer ratio |
+|---|---:|---:|---:|---:|---:|
+| Reasoning on | 0.22 s | **24.3 s** | 71.9 | **2.4** | ≈28.5 |
+| No reasoning | 0.16 s | 0.16 s | 62.7 | 62.7 | 0 |
+
+TTFT and tok/s say the reasoning run is responsive and even faster. In practice, the first readable word arrives after 24 seconds, and for every word you read the model generated about 28 tokens of thinking. That's why TokenRace shows answer TTFT, visible tok/s and the reasoning/answer ratio next to the usual metrics. (≈: Ollama doesn't report reasoning tokens, so the split is estimated from the stream.)
+
 ## Features
 
 - Same method for every server: streaming `POST /chat/completions`, timed on the client with `time.perf_counter()`, never with the servers' own stats.
 - Three preset tests: **Short** (long answer), **Long** (≈8,000 tokens of context) and **Cache** (identical prompt on every run).
 - Streaming response and live metrics.
 - Reasoning models timed correctly, with reasoning and answer tokens shown separately, plus a **No reasoning** switch.
+- Visible answer metrics for reasoning models: answer TTFT, visible tok/s and reasoning/answer ratio next to total tok/s, so a model that thinks longer can't look faster while giving you less to read.
 - First run marked "cold" and excluded from the median.
 - Summary with median, min and max, a chart per server and model, CSV export.
 - English and Italian interface; servers, defaults and texts in easy-to-edit TOML files.
