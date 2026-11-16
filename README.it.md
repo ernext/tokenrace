@@ -21,12 +21,24 @@ Una piccola app [Streamlit](https://streamlit.io): scegli server e modello, avvi
 </p>
 <p align="center"><sub>LFM3 1.7B a 8 bit su Rapid-MLX e oMLX (stessi pesi MLX) e su Ollama (mxfp8), prompt "Breve", senza ragionamento, 3 ripetizioni su un Mac. Un singolo esempio, non una classifica.</sub></p>
 
+## Perché misurare da sé: un esempio con un modello che ragiona
+
+Sui modelli con ragionamento, le misure abituali possono dire il contrario di quello che vivi. qwen3.5:4b su Ollama, prompt "Breve", Apple M5 Pro (24 GB):
+
+| | TTFT | TTFT risposta | Effettiva (tok/s) | Visibile (tok/s) | Rapporto ragionamento/risposta |
+|---|---:|---:|---:|---:|---:|
+| Ragionamento attivo | 0,22 s | **24,3 s** | 71,9 | **2,4** | ≈28,5 |
+| Senza ragionamento | 0,16 s | 0,16 s | 62,7 | 62,7 | 0 |
+
+TTFT e tok/s dicono che con il ragionamento il modello risponde subito ed è persino più veloce. In pratica la prima parola leggibile arriva dopo 24 secondi, e per ogni parola che leggi il modello ha generato circa 28 token di ragionamento. Per questo TokenRace mostra TTFT della risposta, tok/s visibili e rapporto ragionamento/risposta accanto alle misure abituali. (≈: Ollama non dichiara i token di ragionamento, quindi la divisione è stimata dallo stream.)
+
 ## Caratteristiche
 
 - Stesso metodo per tutti i server: `POST /chat/completions` in streaming, cronometrato lato client con `time.perf_counter()`, mai con le statistiche dei server.
 - Tre prove pronte: **Breve** (risposta lunga), **Lungo** (≈8.000 token di contesto) e **Cache** (prompt identico a ogni ripetizione).
 - Risposta in streaming e misure in tempo reale.
 - Modelli con ragionamento cronometrati correttamente, con token di ragionamento e di risposta separati, e interruttore **Senza ragionamento**.
+- Misure sulla risposta visibile per i modelli con ragionamento: TTFT della risposta, tok/s visibili e rapporto ragionamento/risposta accanto ai tok/s totali, così un modello che ragiona più a lungo non può sembrare più veloce mentre ti dà meno da leggere.
 - Prima ripetizione segnata "a freddo" ed esclusa dalla mediana.
 - Riepilogo con mediana, minimo e massimo, grafico per server e modello ed export CSV.
 - Interfaccia in inglese e italiano; server, valori predefiniti e testi in file TOML facili da modificare.
