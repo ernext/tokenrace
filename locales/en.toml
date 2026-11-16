@@ -174,6 +174,7 @@ split_estimated = "Reasoning/answer estimated"
 ttft_answer = "Answer TTFT (s)"
 tok_s_visible = "Visible speed (tok/s)"
 reasoning_ratio = "Reasoning/answer ratio"
+prompt_hash = "Prompt hash"
 
 # Column explanations (? icon in tables)
 [colhelp]
@@ -184,6 +185,7 @@ tok_reason = "Tokens spent reasoning."
 tok_answer = "Tokens of the actual answer."
 estimated = "True if the server sent no usage and tokens were counted from chunks."
 split_estimated = "True if the reasoning/answer split was estimated from chunks."
+prompt_hash = "Fingerprint of the exact prompt and parameters sent (run ID excluded): same value = same workload."
 
 # Notes shown below the server selector (key = id in config/servers.toml)
 [server_notes]

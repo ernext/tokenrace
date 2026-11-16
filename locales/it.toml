@@ -174,6 +174,7 @@ split_estimated = "Ragionamento/risposta stimati"
 ttft_answer = "TTFT risposta (s)"
 tok_s_visible = "Velocità visibile (tok/s)"
 reasoning_ratio = "Rapporto ragionamento/risposta"
+prompt_hash = "Hash del prompt"
 
 # Spiegazioni delle colonne (icona ? nelle tabelle)
 [colhelp]
@@ -184,6 +185,7 @@ tok_reason = "Token spesi a ragionare."
 tok_answer = "Token della risposta vera e propria."
 estimated = "Sì se il server non ha fornito usage e i token sono contati dai chunk."
 split_estimated = "Sì se la divisione ragionamento/risposta è stimata dai chunk."
+prompt_hash = "Impronta del prompt e dei parametri inviati (ID di run escluso): stesso valore = stesso carico."
 
 # Note mostrate sotto il selettore del server (chiave = id in config/servers.toml)
 [server_notes]
