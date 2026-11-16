@@ -133,6 +133,8 @@ Tokens come from the `usage` field. If the server does not send it, chunks are c
 
 In Short and Long every run starts with a unique ID, so prompt caching does not skew the result. Prompts exist in both languages: compare only runs made with the same prompt language (the CSV records it).
 
+Every CSV row also has a **prompt hash**: the first 12 hex characters of the SHA-256 of the exact messages sent (without the run ID) and of the parameters that change the workload: max tokens, temperature, seed and the reasoning fields sent. Same hash means same workload, even if `config/prompts.toml` changes between versions: use it to check that two CSVs are comparable.
+
 The **No reasoning** switch sends a different parameter depending on the server (✅ = tested):
 - Ollama: `reasoning_effort: "none"` ✅
 - LM Studio: `reasoning_effort: "none"` plus `chat_template_kwargs` ✅
