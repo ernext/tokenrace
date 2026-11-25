@@ -133,6 +133,8 @@ I token arrivano dal campo `usage`. Se il server non lo fornisce, vengono contat
 
 In Breve e Lungo ogni ripetizione inizia con un ID univoco, così la cache del prompt non altera il risultato. I prompt esistono in entrambe le lingue: confronta solo prove fatte con la stessa lingua del prompt (il CSV la registra).
 
+Ogni riga del CSV ha anche un **hash del prompt**: i primi 12 caratteri esadecimali dello SHA-256 dei messaggi esatti inviati (senza l'ID di run) e dei parametri che cambiano il carico: max token, temperatura, seed e campi di ragionamento inviati. Stesso hash vuol dire stesso carico, anche se `config/prompts.toml` cambia tra una versione e l'altra: serve a verificare che due CSV siano confrontabili.
+
 L'interruttore **Senza ragionamento** invia un parametro diverso a seconda del server (✅ = provato):
 - Ollama: `reasoning_effort: "none"` ✅
 - LM Studio: `reasoning_effort: "none"` più `chat_template_kwargs` ✅

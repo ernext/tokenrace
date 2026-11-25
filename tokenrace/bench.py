@@ -4,6 +4,7 @@ Tutti i server vengono misurati con lo stesso codice:
 POST /chat/completions in streaming, cronometrato lato client con time.perf_counter().
 """
 
+import hashlib
 import json
 import threading
 import time
@@ -107,6 +108,30 @@ class RamSampler:
         self.peak = max(self.peak, self._used())
 
 
+def build_messages(prompt: str) -> list[dict]:
+    """Messaggi inviati al server per un prompt."""
+    return [{"role": "user", "content": prompt}]
+
+
+def prompt_hash(prompt: str, max_tokens: int, temperature: float, seed: int,
+                request_fields: dict | None = None) -> str:
+    """Impronta del carico inviato: SHA-256 (primi 12 caratteri esadecimali).
+
+    Copre i messaggi (prompt senza l'ID casuale di run aggiunto per evitare la cache)
+    e i parametri che cambiano il carico: max_tokens, temperature, seed e i campi di
+    ragionamento inviati. Stesso prompt e stessi parametri danno sempre lo stesso hash,
+    così due CSV si confrontano anche se config/prompts.toml cambia.
+    """
+    canon = json.dumps({
+        "messages": build_messages(prompt),
+        "max_tokens": max_tokens,
+        "temperature": temperature,
+        "seed": seed,
+        "request_fields": request_fields or {},
+    }, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
+    return hashlib.sha256(canon.encode("utf-8")).hexdigest()[:12]
+
+
 def run_once(base_url: str, model: str, prompt: str, temperature: float, seed: int,
              max_tokens: int, on_update=None, no_reasoning: dict | None = None,
              api_key: str = "", ram_interval: float = 0.5,
@@ -118,7 +143,7 @@ def run_once(base_url: str, model: str, prompt: str, temperature: float, seed: i
     url = base_url.rstrip("/") + "/chat/completions"
     payload = {
         "model": model,
-        "messages": [{"role": "user", "content": prompt}],
+        "messages": build_messages(prompt),
         "temperature": temperature,
         "seed": seed,
         "max_tokens": max_tokens,

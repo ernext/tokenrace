@@ -116,6 +116,7 @@ def make_row(ctx, rip: int, m: dict) -> dict:
                              "tok_reason", "tok_answer", "prompt_tok_s", "ram_before",
                              "ram_peak", "estimated", "split_estimated",
                              "ttft_answer", "tok_s_visible", "reasoning_ratio")},
+        "prompt_hash": ctx["prompt_hash"],
     }
 
 
@@ -232,6 +233,9 @@ def run_test(t, ctx, prompt, run_id_label, measure, resp_box, status_box, live_b
     """Esegue le ripetizioni aggiornando risposta e misure in tempo reale."""
     ss = st.session_state
     p = ctx["params"]
+    # Hash calcolato sul prompt senza l'ID di run: uguale per tutte le ripetizioni
+    ctx = {**ctx, "prompt_hash": bench.prompt_hash(prompt, p["max_tokens"], p["temperature"],
+                                                   p["seed"], p["reasoning_fields"])}
     rows = []
     for rip in range(1, p["repetitions"] + 1):
         text = prompt
